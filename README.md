@@ -1,4 +1,4 @@
-# decameron
+# Decameron
 
 A new Flutter project.
 
