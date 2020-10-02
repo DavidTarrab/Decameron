@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import "dart:async"; 
 
 void main() {
   runApp(MyApp());
@@ -31,6 +32,41 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class LogoFade extends StatefulWidget {
+  @override
+  createState() => LogoFadeState();
+}
+
+class LogoFadeState extends State<LogoFade> {
+  double opacityLevel = 0.0;
+
+  void _changeOpacity() {
+    setState(() => opacityLevel = opacityLevel == 0 ? 1.0 : 0.0);
+  }
+
+  @override
+  void initState() {
+  	super.initState();  // always need this line here
+  	Timer(Duration(seconds: 1), _changeOpacity);
+  	Timer(Duration(seconds:6), _changeOpacity);
+    // anything else you want to do when this widget loads
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      //mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        AnimatedOpacity(
+          opacity: opacityLevel,
+          duration: Duration(seconds: 3),
+          child: Text('story stuff'),
+        ),
+      ],
+    );
+  }
+}
+
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
@@ -59,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      _counter++;
+      _counter ++;
     });
   }
 
@@ -97,6 +133,11 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+          	LogoFade(),
+          	Padding(
+              padding: EdgeInsets.all(100),
+              child: Image.network('https://www.clipartmax.com/png/middle/224-2242893_cartoon-campfire-gif-campfire-gif-transparent-background.png'),
+        	),  
             Text(
               'You have pushed the button this many times:',
             ),
@@ -115,3 +156,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
