@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Decameron',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -27,29 +27,52 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Decameron Home Page'),
     );
   }
 }
 
-class LogoFade extends StatefulWidget {
+class SmokeFade extends StatefulWidget {
+
+  final int startDelay;
+  final int endDelay;
+  final int fadeInDuration;
+  final int fadeOutDuration;
+  final String fadeText;
+
+  SmokeFade ({
+    @required this.startDelay,
+    @required this.endDelay,
+    @required this.fadeInDuration,
+    @required this.fadeOutDuration,
+    @required this.fadeText,
+  });
+
   @override
-  createState() => LogoFadeState();
+  createState() => SmokeFadeState();
 }
 
-class LogoFadeState extends State<LogoFade> {
+class SmokeFadeState extends State<SmokeFade> {
+
   double opacityLevel = 0.0;
 
-  void _changeOpacity() {
-    setState(() => opacityLevel = opacityLevel == 0 ? 1.0 : 0.0);
+  void _fadeIn() {
+    setState(() => opacityLevel = 1.0);
+  }
+
+  void _fadeOut() {
+    setState(() => opacityLevel = 0.0);
+  }
+
+  void _fade() {
+  	Timer(Duration(seconds: widget.startDelay), _fadeIn);
+  	Timer(Duration(seconds: widget.endDelay + widget.startDelay + widget.fadeInDuration), _fadeOut);
   }
 
   @override
   void initState() {
-  	super.initState();  // always need this line here
-  	Timer(Duration(seconds: 1), _changeOpacity);
-  	Timer(Duration(seconds:6), _changeOpacity);
-    // anything else you want to do when this widget loads
+  	super.initState();
+  	_fade();
   }
 
   @override
@@ -59,8 +82,8 @@ class LogoFadeState extends State<LogoFade> {
       children: [
         AnimatedOpacity(
           opacity: opacityLevel,
-          duration: Duration(seconds: 3),
-          child: Text('story stuff'),
+          duration: Duration(seconds: widget.fadeInDuration),
+          child: Text(widget.fadeText),
         ),
       ],
     );
@@ -133,7 +156,16 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-          	LogoFade(),
+
+            
+          	SmokeFade(
+          	  startDelay : 2,
+          	  endDelay : 5, 
+          	  fadeInDuration : 1, 
+          	  fadeOutDuration : 8,
+          	  fadeText : 'story sentence',
+          	  ),
+
           	Padding(
               padding: EdgeInsets.all(100),
               child: Image.network('https://www.clipartmax.com/png/middle/224-2242893_cartoon-campfire-gif-campfire-gif-transparent-background.png'),
