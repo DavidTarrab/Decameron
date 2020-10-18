@@ -90,6 +90,69 @@ class SmokeFadeState extends State<SmokeFade> {
   }
 }
 
+
+class SmokeAnim extends StatefulWidget {
+  SmokeAnim({Key key}) : super(key: key);
+
+  @override
+  _SmokeAnimState createState() => _SmokeAnimState();
+}
+
+/// This is the private State class that goes with SmokeAnim.
+/// AnimationControllers can be created with `vsync: this` because of TickerProviderStateMixin.
+class _SmokeAnimState extends State<SmokeAnim>
+    with TickerProviderStateMixin {
+  AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final double smallLogo = 10.0;
+    final double bigLogo = 20.0;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final Size biggest = constraints.biggest;
+        return Stack(
+          children: [
+            PositionedTransition(
+              rect: RelativeRectTween(
+                begin: RelativeRect.fromSize(
+                    Rect.fromLTWH(0, 0, smallLogo, smallLogo), biggest),
+                end: RelativeRect.fromSize(
+                    Rect.fromLTWH(biggest.width - bigLogo,
+                        biggest.height - bigLogo, bigLogo, bigLogo),
+                    biggest),
+              ).animate(CurvedAnimation(
+                parent: _controller,
+                curve: Curves.ease,
+              )),
+              child: Padding(
+                  padding: const EdgeInsets.all(8), 
+                  child: FlutterLogo()),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
@@ -109,18 +172,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter ++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,27 +215,17 @@ class _MyHomePageState extends State<MyHomePage> {
           	  fadeInDuration : 1, 
           	  fadeOutDuration : 8,
           	  fadeText : 'story sentence',
-          	  ),
+          	),
+
+          	//SmokeAnim(),
 
           	Padding(
-              padding: EdgeInsets.all(100),
+              padding: EdgeInsets.all(10),
               child: Image.network('https://www.clipartmax.com/png/middle/224-2242893_cartoon-campfire-gif-campfire-gif-transparent-background.png'),
         	),  
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
