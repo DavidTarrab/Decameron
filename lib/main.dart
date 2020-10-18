@@ -66,44 +66,24 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-
-            
-          	SmokeFade(
-          	  startDelay : 2,
-          	  endDelay : 5, 
-          	  fadeInDuration : 1, 
-          	  fadeOutDuration : 8,
-          	  fadeText : 'story sentence',
-          	),
-
-          	//SmokeAnim(),
-
-          	Padding(
-              padding: EdgeInsets.all(10),
-              child: Image.network('https://www.clipartmax.com/png/middle/224-2242893_cartoon-campfire-gif-campfire-gif-transparent-background.png'),
-        	),  
-          ],
-        ),
+      body: Stack(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.center,
+            child: Image.network('https://www.clipartmax.com/png/middle/224-2242893_cartoon-campfire-gif-campfire-gif-transparent-background.png'),
+          ),         
+          Align(
+            alignment: Alignment.center,
+            child: SmokeFade(
+              startDelay : 2,
+              endDelay : 5, 
+              fadeInDuration : 1, 
+              fadeOutDuration : 8,
+              fadeText : 'story sentence',
+            ),
+          ),
+          SmokeAnim(),  // animates its own alignment
+        ]
       ),
     );
   }
