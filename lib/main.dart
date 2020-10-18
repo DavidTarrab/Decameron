@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'src/animations.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,7 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Decameron',
+      title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -27,7 +26,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Decameron Home Page'),
+      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -51,6 +50,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      // This call to setState tells the Flutter framework that something has
+      // changed in this State, which causes it to rerun the build method below
+      // so that the display can reflect the updated values. If we changed
+      // _counter without calling setState(), then the build method would not be
+      // called again, and so nothing would appear to happen.
+      _counter++;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,26 +97,21 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-
-            
-          	SmokeFade(
-          	  startDelay : 2,
-          	  endDelay : 5, 
-          	  fadeInDuration : 1, 
-          	  fadeOutDuration : 8,
-          	  fadeText : 'story sentence',
-          	),
-
-          	//SmokeAnim(),
-
-          	Padding(
-              padding: EdgeInsets.all(10),
-              child: Image.network('https://www.clipartmax.com/png/middle/224-2242893_cartoon-campfire-gif-campfire-gif-transparent-background.png'),
-        	),  
+            Text(
+              'You have pushed the button this many times:',
+            ),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headline4,
+            ),
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
-
