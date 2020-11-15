@@ -21,7 +21,8 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
+        scaffoldBackgroundColor: Colors.black,
         // This makes the visual density adapt to the platform that you run
         // the app on. For desktop platforms, the controls will be smaller and
         // closer together (more dense) than on mobile platforms.
@@ -70,7 +71,10 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           Align(
             alignment: Alignment.center,
-            child: Image.network('https://www.clipartmax.com/png/middle/224-2242893_cartoon-campfire-gif-campfire-gif-transparent-background.png'),
+            child: Image.network(
+            'https://media3.giphy.com/media/3o6ZsWmtAVZFltTWVi/giphy.gif',
+            scale : 0.5,
+            ), //campfire png
           ),         
           Align(
             alignment: Alignment.center,
@@ -82,7 +86,10 @@ class _MyHomePageState extends State<MyHomePage> {
               fadeText : 'story sentence',
             ),
           ),
-          SmokeAnim(),  // animates its own alignment
+          SmokeAlign(
+            startAlignment : Alignment(0.0, 0.0),
+            endAlignment : Alignment(0.5, -0.7),
+          ),  // animates its own alignment
         ]
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import "dart:math";
 import "dart:async"; 
 
 class SmokeFade extends StatefulWidget {
@@ -80,26 +81,57 @@ class SmokeFadeState extends State<SmokeFade> {
 //   ]
 // )
 
-class SmokeAnim extends StatefulWidget {
-  SmokeAnim({Key key}) : super(key: key);
+
+
+
+class SmokeAlign extends StatefulWidget {
+
+  final Alignment startAlignment;
+  final Alignment endAlignment;
+
+    SmokeAlign({
+    	Key key,
+    	@required this.startAlignment,
+    	@required this.endAlignment,
+    	}) : super(key: key);
 
   @override
-  _SmokeAnimState createState() => _SmokeAnimState();
+  _SmokeAlignState createState() => _SmokeAlignState();
 }
 
 /// This is the private State class that goes with SmokeAnim.
 /// AnimationControllers can be created with `vsync: this` because of TickerProviderStateMixin.
-class _SmokeAnimState extends State<SmokeAnim>
+class _SmokeAlignState extends State<SmokeAlign>
     with TickerProviderStateMixin {
+
+  Alignment alignment;
+
+  Random random = new Random();
+
   AnimationController _controller;
+
+  void go() {
+    setState(() => alignment = widget.endAlignment);
+  }
+
+  void come() {
+    setState(() => alignment = widget.startAlignment);
+  }
+
+  void goAndCome() {
+    Timer(Duration(milliseconds: 1000), go);
+    Timer(Duration(milliseconds: 3500), come);
+  }
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 1),
       vsync: this,
-    )..repeat(reverse: true);
+    );
+    come();
+    goAndCome();
   }
 
   @override
@@ -109,14 +141,18 @@ class _SmokeAnimState extends State<SmokeAnim>
   }
 
   @override
-  Widget build(BuildContext context) => AlignTransition(
-    alignment: AlignmentTween(
-      begin: Alignment(-1, -1),
-      end: Alignment(1, 1),
+  Widget build(BuildContext context) => AnimatedAlign(
+    /*alignment: AlignmentTween(
+      begin: Alignment(widget.xStartAlignment, widget.yStartAlignment),
+      end: Alignment((random.nextInt(widget.maxXEndAlignment + widget.minXEndAlignment.abs()) + widget.minXEndAlignment)/100, widget.yEndAlignment),
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.ease,
-    )),
-    child: FlutterLogo(),
+    ))*/
+    alignment: alignment,
+    curve: Curves.ease,
+    duration: const Duration(seconds: 2),
+    child: FlutterLogo(size : 200),
   );
 }
+
