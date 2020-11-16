@@ -2,28 +2,37 @@ import 'package:flutter/material.dart';
 import "dart:math";
 import "dart:async"; 
 
-class SmokeFade extends StatefulWidget {
+class SmokeAnim extends StatefulWidget {
 
+  final Alignment startAlignment;
+  final Alignment endAlignment;
   final int startDelay;
   final int endDelay;
+  final int midDelay;
   final int fadeInDuration;
   final int fadeOutDuration;
-  final String fadeText;
+  final Text fadeText;
 
-  SmokeFade ({
-    @required this.startDelay,
-    @required this.endDelay,
-    @required this.fadeInDuration,
-    @required this.fadeOutDuration,
-    @required this.fadeText,
-  });
+    SmokeAnim({
+    	Key key,
+    	@required this.startAlignment,
+    	@required this.endAlignment,
+      @required this.startDelay,
+      @required this.endDelay,
+      @required this.midDelay,
+      @required this.fadeInDuration,
+      @required this.fadeOutDuration,
+      @required this.fadeText,
+    	}) : super(key: key);
 
   @override
-  createState() => SmokeFadeState();
+  _SmokeAnimState createState() => _SmokeAnimState();
 }
 
-
-class SmokeFadeState extends State<SmokeFade> {
+/// This is the private State class that goes with SmokeAnim.
+/// AnimationControllers can be created with `vsync: this` because of TickerProviderStateMixin.
+class _SmokeAnimState extends State<SmokeAnim>
+    with TickerProviderStateMixin {
 
   double opacityLevel = 0.0;
 
@@ -36,73 +45,9 @@ class SmokeFadeState extends State<SmokeFade> {
   }
 
   void _fade() {
-    Timer(Duration(seconds: widget.startDelay), _fadeIn);
-    Timer(Duration(seconds: widget.endDelay + widget.startDelay + widget.fadeInDuration), _fadeOut);
+    Timer(Duration(milliseconds: widget.startDelay), _fadeIn);
+    Timer(Duration(milliseconds: widget.midDelay + widget.startDelay + widget.fadeInDuration), _fadeOut);
   }
-
-  @override
-  void initState() {
-    super.initState();
-    _fade();
-  }
-
-  @override
-  Widget build(BuildContext context) => AnimatedOpacity(
-    opacity: opacityLevel,
-    duration: Duration(seconds: widget.fadeInDuration),
-    child: Text(widget.fadeText),
-  );
-}
-
-// TODO: Recreate the below widget into a "SmokeAlign" that takes the following:
-// - Widget child
-// - Alignment startAlignment
-// - Alignment endAlignment
-// - Duration duration
-// 
-// The point is to have something like this: 
-// Stack(
-//   children: [
-//     Align(
-//       alignment: Alignment.center,
-//       child: Fireplace(),
-//     ),
-//     SmokeAlign(
-//       startAlignment: Alignment.center,
-//       endAlignment: getRandomAlignment(),  // where the smoke ends up
-//       child: SmokeFade(
-//         startDelay : 2,
-//         endDelay : 5, 
-//         fadeInDuration : 1, 
-//         fadeOutDuration : 8,
-//         fadeText : 'story sentence',
-//       )
-//     )
-//   ]
-// )
-
-
-
-
-class SmokeAlign extends StatefulWidget {
-
-  final Alignment startAlignment;
-  final Alignment endAlignment;
-
-    SmokeAlign({
-    	Key key,
-    	@required this.startAlignment,
-    	@required this.endAlignment,
-    	}) : super(key: key);
-
-  @override
-  _SmokeAlignState createState() => _SmokeAlignState();
-}
-
-/// This is the private State class that goes with SmokeAnim.
-/// AnimationControllers can be created with `vsync: this` because of TickerProviderStateMixin.
-class _SmokeAlignState extends State<SmokeAlign>
-    with TickerProviderStateMixin {
 
   Alignment alignment;
 
@@ -119,8 +64,8 @@ class _SmokeAlignState extends State<SmokeAlign>
   }
 
   void goAndCome() {
-    Timer(Duration(milliseconds: 1000), go);
-    Timer(Duration(milliseconds: 3500), come);
+    Timer(Duration(milliseconds: widget.startDelay - 300), go);
+    Timer(Duration(milliseconds: widget.midDelay + widget.startDelay + widget.fadeInDuration - 200), come);
   }
 
   @override
@@ -130,8 +75,10 @@ class _SmokeAlignState extends State<SmokeAlign>
       duration: const Duration(seconds: 1),
       vsync: this,
     );
+    _fade();
     come();
     goAndCome();
+    //add end delay once the loop works
   }
 
   @override
@@ -142,17 +89,13 @@ class _SmokeAlignState extends State<SmokeAlign>
 
   @override
   Widget build(BuildContext context) => AnimatedAlign(
-    /*alignment: AlignmentTween(
-      begin: Alignment(widget.xStartAlignment, widget.yStartAlignment),
-      end: Alignment((random.nextInt(widget.maxXEndAlignment + widget.minXEndAlignment.abs()) + widget.minXEndAlignment)/100, widget.yEndAlignment),
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.ease,
-    ))*/
     alignment: alignment,
     curve: Curves.ease,
     duration: const Duration(seconds: 2),
-    child: FlutterLogo(size : 200),
+    child: AnimatedOpacity(
+      opacity: opacityLevel,
+      duration: Duration(seconds: widget.fadeInDuration),
+      child: widget.fadeText,
+    )
   );
 }
-

@@ -76,19 +76,21 @@ class _MyHomePageState extends State<MyHomePage> {
             scale : 0.5,
             ), //campfire png
           ),         
-          Align(
-            alignment: Alignment.center,
-            child: SmokeFade(
-              startDelay : 2,
-              endDelay : 5, 
-              fadeInDuration : 1, 
-              fadeOutDuration : 8,
-              fadeText : 'story sentence',
-            ),
-          ),
-          SmokeAlign(
+          SmokeAnim(
             startAlignment : Alignment(0.0, 0.0),
-            endAlignment : Alignment(0.5, -0.7),
+            endAlignment : Alignment(-0.9, -0.8),
+            startDelay : 1900,
+            midDelay : 3000,
+            endDelay : 5000, 
+            fadeInDuration : 1, 
+            fadeOutDuration : 8,
+            fadeText : Text(
+              'STORY SENTENCE!',
+                style: TextStyle(
+                fontSize: 35,
+                color: Colors.grey[300],
+              ),
+            ),
           ),  // animates its own alignment
         ]
       ),
