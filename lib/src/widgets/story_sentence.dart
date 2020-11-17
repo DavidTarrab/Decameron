@@ -74,7 +74,7 @@ class StorySentenceState extends State<StorySentence> with TickerProviderStateMi
 		angle = getAnimation(
 			controller: controller,
 			tween: Tween(begin: 0, end: rotation),
-			curve: Curves.easeInQuad,
+			curve: Curves.ease,
 		);
 		letterSpacing = getAnimation(
 			controller: controller,
