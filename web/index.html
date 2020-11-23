@@ -18,6 +18,30 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <!-- Firebase setup -->
+  <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
+
+  <script>
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    var firebaseConfig = {
+      apiKey: "AIzaSyCqVxaHc9MIk6TnERJQZQ9lKep4UNV9aWM",
+      authDomain: "decameron-33d47.firebaseapp.com",
+      databaseURL: "https://decameron-33d47.firebaseio.com",
+      projectId: "decameron-33d47",
+      storageBucket: "decameron-33d47.appspot.com",
+      messagingSenderId: "356257548640",
+      appId: "1:356257548640:web:b9b174931ce471ac543605",
+      measurementId: "G-XW3RY7XN3W"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+  </script>
+  <!-- End Firebase setup -->
+
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
