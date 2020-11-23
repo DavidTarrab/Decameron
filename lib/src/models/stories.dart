@@ -3,7 +3,11 @@ import "package:decameron/services.dart";
 
 import "model.dart";
 
+/// The data models for the stories. 
+/// 
+/// All logic pertaining to getting and setting stories happens here. 
 class Stories extends Model {
+	/// The first twenty random stories.
 	List<Story> randomStories;
 
 	@override
