@@ -4,7 +4,7 @@ import "package:decameron/services.dart";
 import "model.dart";
 
 class Stories extends Model {
-	Iterable<Story> randomStories;
+	List<Story> randomStories;
 
 	@override
 	Future<void> init() async {
