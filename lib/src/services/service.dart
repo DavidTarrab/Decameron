@@ -4,6 +4,10 @@
 // 
 // ignore_for_file: one_member_abstracts
 
+/// A service which wraps code we don't own. For example, the database. 
+/// 
+/// All services must implement [init] to run code when the app starts. 
 abstract class Service {
+	/// Initializes the service when the app starts. 
 	Future<void> init();
 }

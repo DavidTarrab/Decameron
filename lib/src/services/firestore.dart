@@ -3,9 +3,12 @@ import "package:cloud_firestore/cloud_firestore.dart";
 import "database.dart";
 export "database.dart";
 
+/// Implements the [Database] interface with Cloud Firestore. 
 class CloudFirestore extends Database {
+	/// The Firestore plugin. 
 	static final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+	/// The stories collection. 
 	static final CollectionReference storiesCollection = 
 		firestore.collection("stories");
 
