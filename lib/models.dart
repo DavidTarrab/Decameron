@@ -1,6 +1,8 @@
 import "src/models/model.dart";
 import "src/models/stories.dart";
 
+export "src/models/stories.dart";
+
 class Models extends Model {
 	static Models instance = Models();
 
