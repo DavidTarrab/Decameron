@@ -16,7 +16,7 @@ class CloudFirestore extends Database {
 	Future<void> init() async {}
 
 	@override
-	Future<List<Map<String, dynamic>>> getRandomStories(int n) async {
+	Future<List<Map>> getRandomStories(int n) async {
 		final String randomKey = storiesCollection.doc().id;
 		final Query query = storiesCollection
 			.where(FieldPath.documentId, isGreaterThanOrEqualTo: randomKey)

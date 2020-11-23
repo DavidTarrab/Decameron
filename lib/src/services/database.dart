@@ -6,5 +6,5 @@ import "service.dart";
 /// define what should be accessible from the database. 
 abstract class Database extends Service {
 	/// Gets n random stories from the database. 
-	Future<List<Map<String, dynamic>>> getRandomStories(int n);
+	Future<List<Map>> getRandomStories(int n);
 }

@@ -12,7 +12,7 @@ class Stories extends Model {
 
 	@override
 	Future<void> init() async {
-		final Iterable<Map<String, dynamic>> randomJson = 
+		final Iterable<Map> randomJson = 
 			await Services.instance.database.getRandomStories(10);
 
 		randomStories = [
