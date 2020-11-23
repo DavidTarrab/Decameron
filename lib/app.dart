@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 
+import "package:decameron/models.dart";
 import "package:decameron/pages.dart";
 import "package:decameron/services.dart";
 
@@ -12,10 +13,19 @@ class Decameron extends StatefulWidget {
 }
 
 class DecameronState extends State<Decameron> {
+  bool isReady = false;
+
   @override
   void initState() {
     super.initState();
-    Services.instance.init();
+    init().then(
+      (void _) => setState(() => isReady = true)
+    );
+  }
+
+  Future<void> init() async {
+    await Services.instance.init();
+    await Models.instance.init();
   }
 
   @override
@@ -26,6 +36,8 @@ class DecameronState extends State<Decameron> {
       scaffoldBackgroundColor: Colors.black,
       visualDensity: VisualDensity.adaptivePlatformDensity,
     ),
-    home: HomePage(),
+    home: isReady 
+      ? HomePage()
+      : const Center(child: CircularProgressIndicator())
   );
 }
