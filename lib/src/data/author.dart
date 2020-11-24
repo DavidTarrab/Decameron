@@ -27,4 +27,10 @@ class Author {
 		first = json ["first"],
 		last = json ["last"],
 		uid = json ["uid"];
+
+	Map get json => {
+		"first": first,
+		"last": last,
+		"uid": uid,
+	};
 }

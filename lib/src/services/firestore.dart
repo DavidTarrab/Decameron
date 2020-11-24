@@ -28,4 +28,8 @@ class CloudFirestore extends Database {
 				snapshot.data()
 		];
 	}
+
+	@override
+	Future<void> uploadStory(Map json) async => 
+		storiesCollection.doc().set(json);
 }

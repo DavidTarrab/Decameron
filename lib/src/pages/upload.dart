@@ -149,7 +149,6 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 	Future<void> upload(BuildContext context) async {
 		setState(() => isLoading = true);
 		try {
-			await Future.delayed(const Duration(seconds: 1));
 			Form.of(context).save();
 			await Models.instance.stories.upload(model.story);
 		} catch (error) {  // ignore: avoid_catches_without_on_clauses
