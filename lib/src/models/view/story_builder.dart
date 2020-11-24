@@ -6,7 +6,7 @@ class StoryBuilderModel {
 	String title;
 
 	/// The first and last names of the author. 
-	String first, last;
+	String firstName, lastInitial;
 
 	/// The first catchy sentence of this story. 
 	String firstSentence;
@@ -22,8 +22,8 @@ class StoryBuilderModel {
 		title: title,
 		firstSentence: firstSentence,
 		author: Author(
-			first: first,
-			last: last,
+			first: firstName,
+			last: lastInitial,
 			uid: uid,
 		),
 		createdAt: DateTime.now(),
