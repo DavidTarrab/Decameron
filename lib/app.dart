@@ -43,6 +43,10 @@ class DecameronState extends State<Decameron> {
     ),
     home: isReady 
       ? HomePage()
-      : const Center(child: CircularProgressIndicator())
+      : const Center(child: CircularProgressIndicator()),
+    routes: {
+      Routes.home: (_) => HomePage(),
+      Routes.upload: (_) => UploadPage(),
+    },
   );
 }
