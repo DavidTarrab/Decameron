@@ -40,13 +40,14 @@ class DecameronState extends State<Decameron> {
       primarySwatch: Colors.red,
       scaffoldBackgroundColor: Colors.black,
       visualDensity: VisualDensity.adaptivePlatformDensity,
+      brightness: Brightness.dark,
     ),
     home: isReady 
       ? HomePage()
       : const Center(child: CircularProgressIndicator()),
     routes: {
       Routes.home: (_) => HomePage(),
-      Routes.upload: (_) => UploadPage(),
+      Routes.upload: (_) => StoryUploaderPage(),
     },
   );
 }

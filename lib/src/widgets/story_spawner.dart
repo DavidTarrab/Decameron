@@ -2,6 +2,8 @@ import "dart:async";
 import "package:flutter/material.dart";
 
 import "package:decameron/data.dart";
+import "package:decameron/pages.dart";
+
 import "story_sentence.dart";
 
 /// Spawns [StorySentence] widgets over a fireplace. 
@@ -53,6 +55,16 @@ class StorySpawnerState extends State<StorySpawner> {
 				child: Image.network(
 					"https://media3.giphy.com/media/3o6ZsWmtAVZFltTWVi/giphy.gif",
 					scale: 0.5,
+				)
+			),
+			Align(
+				alignment: const Alignment(0, 0.85),
+				child: TextButton(
+					onPressed: () => Navigator.of(context).pushNamed(Routes.upload),
+					child: Text(
+						"Tell your own story", 
+						style: Theme.of(context).textTheme.headline5
+					),
 				)
 			),
 			for (final String sentence in sentences)
