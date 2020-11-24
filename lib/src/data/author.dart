@@ -1,3 +1,5 @@
+import "package:meta/meta.dart";
+
 /// A storyteller. 
 /// 
 /// Since students are under 18, we can only use their last initial. 
@@ -12,6 +14,13 @@ class Author {
 
 	/// The author's user ID. 
 	final String uid;
+
+	/// Defines a storyteller. 
+	Author({
+		@required this.first,
+		@required this.last,
+		@required this.uid,
+	});
 
 	/// Reads an author from a JSON object. 
 	Author.fromJson(Map json) : 
