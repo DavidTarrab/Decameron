@@ -20,4 +20,8 @@ class Stories extends Model {
 				Story.fromJson(json)
 		];
 	}
+
+	Future<void> upload(Story story) async {
+
+	}
 }

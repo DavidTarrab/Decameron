@@ -1,7 +1,8 @@
-import "src/models/model.dart";
-import "src/models/stories.dart";
+import "src/models/data/model.dart";
+import "src/models/data/stories.dart";
 
-export "src/models/stories.dart";
+export "src/models/data/stories.dart";
+export "src/models/view/story_builder.dart";
 
 /// Bundles all the data models in one convenient model. 
 /// 
