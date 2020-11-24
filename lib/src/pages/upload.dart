@@ -13,11 +13,15 @@ class FormRow extends StatelessWidget {
 	/// A callback for when [FormState.save] is called. 
 	final void Function(String) onSaved;
 
+	/// A function to validate the entered string.
+	final FormFieldValidator<String> validator;
+
 	/// Puts a textbox next to a label.
 	const FormRow({
 		@required this.onSaved,
 		@required this.label,
 		this.subtitle,
+		this.validator,
 	});
 
 	@override
@@ -34,7 +38,7 @@ class FormRow extends StatelessWidget {
 				),
 				Expanded(
 					flex: 2,
-					child: TextFormField(onSaved: onSaved)
+					child: TextFormField(onSaved: onSaved, validator: validator)
 				),
 			]
 		)
@@ -68,6 +72,7 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 			),
 		),
 		body: Form(
+			autovalidateMode: AutovalidateMode.onUserInteraction, 
 			child: Center(child: 
 				ConstrainedBox(
 					constraints: const BoxConstraints(maxWidth: 750),
@@ -104,6 +109,8 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 							FormRow(
 								label: "Your name",
 								subtitle: "First name and last initial",
+								validator: (String value) => value.contains(" ") 
+									? null : "Please enter your first name and last initial",
 								onSaved: (String value) {
 									final List<String> parts = value.split(" ");
 									model
