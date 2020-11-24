@@ -39,6 +39,7 @@ class Story {
 		firstSentence = json ["firstSentence"],
 		text = json ["text"];
 
+	/// The JSON representation of this object. 
 	Map get json => {
 		"createdAt": createdAt.toString(),
 		"author": author.json,
