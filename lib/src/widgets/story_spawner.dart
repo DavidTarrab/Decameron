@@ -54,15 +54,14 @@ class StorySpawnerState extends State<StorySpawner> {
 	Widget build(BuildContext context) => Stack(
 		children: [
 			Container(
-				alignment: Alignment.topRight,
+				alignment: Alignment.topLeft,
 				padding: const EdgeInsets.all(10),
-				width: 350,
 				child: Container(
 					decoration: BoxDecoration(
 						border: Border.all(color: Colors.white),
 						borderRadius: BorderRadius.circular(10),
 					),
-					child: UserTile()
+					child: UserTile(),
 				)
 			),
 			Center(
