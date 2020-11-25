@@ -34,5 +34,6 @@ class Stories extends Model {
 	Future<void> upload(Story story) async { 
 		await Services.instance.database.uploadStory(story.json);
 		randomStories = await getRandomStories();
+		notifyListeners();  // updates the fireplace with the new story
 	}
 }
