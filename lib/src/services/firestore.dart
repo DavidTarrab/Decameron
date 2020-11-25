@@ -49,5 +49,5 @@ class CloudFirestore extends Database {
 
 	@override
 	Future<void> setProfile(Map json) => 
-		userDocument.set(json);
+		userDocument.set(Map<String, dynamic>.from(json));
 }
