@@ -18,19 +18,9 @@ class UserModel extends Model {
 
 	@override 
 	Future<void> init() async {
-		final Services services = Services.instance;
 		if (isSignedIn) {
-			user = User.fromJson(await services.database.userProfile);
-			final String uid = services.auth.uid;
-			final String name = services.auth.username;
-			final List<String> parts = name.split(" ");
-			final String firstName = parts [0];
-			final String lastInitial = parts [1] [0];
-			author = Author(
-				first: firstName,
-				last: lastInitial,
-				uid: uid,
-			);
+			user = await getUserProfile();
+			author = getAuthor();
 		} else {
 			user = null;
 			author = null;
@@ -38,10 +28,44 @@ class UserModel extends Model {
 		notifyListeners();  // this function may also be called later
 	}
 
+	/// Gets the user profile, creating one if necessary.
+	Future<User> getUserProfile() async {
+		final Database database = Services.instance.database;
+		final Map json = await database.userProfile;
+		User result;
+		if (json == null) {
+			result = const User(stories: []);
+			await database.setProfile(result.json);
+		} else {
+			result = User.fromJson(json);
+		}
+		return result;
+	}
+
+	/// Gets the user's public profile.
+	Author getAuthor() {
+		final Auth auth = Services.instance.auth;
+		final String uid = auth.uid;
+		final String name = auth.username;
+		final List<String> parts = name.split(" ");
+		final String firstName = parts [0];
+		final String lastInitial = parts [1] [0];
+		return Author(
+			first: firstName,
+			last: lastInitial,
+			uid: uid,
+		);
+	}
+
 	/// Signs the user in. 
 	Future<void> signIn() async {
-		await Services.instance.auth.signIn();
-		await init();
+		try {
+			await Services.instance.auth.signIn();
+			await init();
+		} catch (error) {
+			await signOut();  // this way the next reload won't error
+			rethrow;  // hand it over to the UI
+		}
 	}
 
 	/// Signs the user out. 

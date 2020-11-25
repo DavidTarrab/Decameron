@@ -2,6 +2,7 @@ import "src/services/auth.dart";
 import "src/services/firestore.dart";
 import "src/services/service.dart";
 
+export "src/services/auth.dart";
 export "src/services/database.dart";
 
 /// Bundles all the services in one convenient object. 
