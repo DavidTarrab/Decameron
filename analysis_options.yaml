@@ -120,7 +120,7 @@ linter:
     - public_member_api_docs
     - recursive_getters
     - slash_for_doc_comments
-    - sort_child_properties_last
+    # - sort_child_properties_last  # sometimes the child is simple
     # - sort_constructors_first
     - sort_pub_dependencies
     - sort_unnamed_constructors_first
