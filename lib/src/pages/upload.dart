@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import "package:decameron/models.dart";
-import "package:decameron/services.dart";
 
 /// A widget that puts a [TextFormField] next to a [Text] label. 
 class FormRow extends StatelessWidget {
@@ -72,7 +71,6 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 			),
 		),
 		body: Form(
-			autovalidateMode: AutovalidateMode.onUserInteraction, 
 			child: Center(child: 
 				ConstrainedBox(
 					constraints: const BoxConstraints(maxWidth: 750),
@@ -80,11 +78,6 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 						padding: const EdgeInsets.all(10),
 						children: [
 							const SizedBox(height: 10),
-							FormField<void>(
-								// onSaved: (void _) => model.uid = Services.instance.auth.uid,
-								onSaved: (_) {},
-								builder: (_) => Container(),
-							),
 							FractionallySizedBox( 
 								widthFactor: 2/3,
 								child: TextFormField(
@@ -105,18 +98,6 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 							FormRow(
 								label: "Catchy first sentence",
 								onSaved: (String value) => model.firstSentence = value,
-							),
-							FormRow(
-								label: "Your name",
-								subtitle: "First name and last initial",
-								validator: (String value) => value.contains(" ") 
-									? null : "Please enter your first name and last initial",
-								onSaved: (String value) {
-									final List<String> parts = value.split(" ");
-									model
-										..firstName = parts [0]
-										..lastInitial = parts [1] [0];
-								}
 							),
 							const SizedBox(height: 20),
 							const Text("Type out the full story here"),
@@ -149,6 +130,10 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 	Future<void> upload(BuildContext context) async {
 		setState(() => isLoading = true);
 		try {
+			if (!Form.of(context).validate()) {
+				setState(() => isLoading = false);
+				return;
+			}
 			Form.of(context).save();
 			await Models.instance.stories.upload(model.story);
 		} catch (error) {  // ignore: avoid_catches_without_on_clauses
@@ -165,5 +150,6 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 			rethrow;
 		}
 		setState(() => isLoading = false);
+		Navigator.of(context).pop();
 	}
 }
