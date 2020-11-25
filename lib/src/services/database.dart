@@ -10,4 +10,10 @@ abstract class Database extends Service {
 
 	/// Uploads a story to the database. 
 	Future<void> uploadStory(Map json);
+
+	/// The user profile. 
+	Future<Map> get userProfile;
+
+	/// Creates or updates the user profile. 
+	Future<void> setProfile(Map json);
 }
