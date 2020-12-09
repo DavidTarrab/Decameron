@@ -7,4 +7,13 @@ import "service.dart";
 abstract class Database extends Service {
 	/// Gets n random stories from the database. 
 	Future<List<Map>> getRandomStories(int n);
+
+	/// Uploads a story to the database. 
+	Future<void> uploadStory(Map json);
+
+	/// The user profile. 
+	Future<Map> get userProfile;
+
+	/// Creates or updates the user profile. 
+	Future<void> setProfile(Map json);
 }

@@ -1,3 +1,5 @@
+import "package:meta/meta.dart";
+
 import "author.dart";
 
 /// A story told by the fireplace. 
@@ -20,6 +22,15 @@ class Story {
 	/// The full transcript of the story. 
 	final String text;
 
+	/// Creates a story. 
+	Story({
+		@required this.createdAt,
+		@required this.author,
+		@required this.title,
+		@required this.firstSentence,
+		@required this.text,
+	});
+
 	/// Reads a story from a JSON object. 
 	Story.fromJson(Map json) : 
 		createdAt = DateTime.parse(json ["createdAt"]),
@@ -27,4 +38,13 @@ class Story {
 		title = json ["title"],
 		firstSentence = json ["firstSentence"],
 		text = json ["text"];
+
+	/// The JSON representation of this object. 
+	Map get json => {
+		"createdAt": createdAt.toString(),
+		"author": author.json,
+		"title": title,
+		"firstSentence": firstSentence,
+		"text": text,
+	};
 }

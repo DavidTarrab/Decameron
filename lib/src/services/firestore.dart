@@ -1,5 +1,7 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 
+import "package:decameron/services.dart";
+
 import "database.dart";
 export "database.dart";
 
@@ -9,8 +11,16 @@ class CloudFirestore extends Database {
 	static final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
 	/// The stories collection. 
-	static final CollectionReference storiesCollection = 
+	final CollectionReference storiesCollection = 
 		firestore.collection("stories");
+
+	/// The users collection. 
+	final CollectionReference usersCollection = 
+		firestore.collection("users");
+
+	/// The user profile document for this user.
+	DocumentReference get userDocument => 
+		usersCollection.doc(Services.instance.auth.uid);
 
 	@override
 	Future<void> init() async {}
@@ -28,4 +38,16 @@ class CloudFirestore extends Database {
 				snapshot.data()
 		];
 	}
+
+	@override
+	Future<void> uploadStory(Map json) => 
+		storiesCollection.doc().set(Map<String, dynamic>.from(json));
+
+	@override
+	Future<Map<String, dynamic>> get userProfile async => 
+		(await userDocument.get()).data();
+
+	@override
+	Future<void> setProfile(Map json) => 
+		userDocument.set(Map<String, dynamic>.from(json));
 }
