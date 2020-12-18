@@ -73,7 +73,7 @@ class HomePageState extends State<HomePage> {
 						alignment: const Alignment(0, 0.85),
 						child: Builder(
 							builder: (BuildContext context) => TextButton(
-								onPressed: uploadStory,
+								onPressed: () => uploadStory(context),
 								child: Text(
 									"Tell your own story", 
 									style: Theme.of(context).textTheme.headline5
@@ -105,7 +105,9 @@ class HomePageState extends State<HomePage> {
 	}
 
 	/// Directs the user to upload a story, signing them in if necessary. 
-	Future<void> uploadStory() async {
+	/// 
+	/// Needs a [BuildContext] underneath the scaffold. 
+	Future<void> uploadStory(BuildContext context) async {
 		if (!Models.instance.user.isSignedIn) {
 			return Scaffold.of(context).showSnackBar(
 				const SnackBar(content: Text("You must be signed in to upload a story")),
