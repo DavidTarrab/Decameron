@@ -1,3 +1,5 @@
+import "dart:typed_data";
+
 import "package:decameron/data.dart";
 import "package:decameron/models.dart";
 
@@ -11,6 +13,8 @@ class StoryBuilderModel {
 
 	/// The full text and transcription of this story. 
 	String text;
+
+	Uint8List video; 
 
 	/// The story this model represents. 
 	Story get story => Story(

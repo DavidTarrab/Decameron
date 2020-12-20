@@ -1,3 +1,6 @@
+import "dart:typed_data";
+
+import "package:file_picker/file_picker.dart";
 import "package:flutter/material.dart";
 import "package:decameron/models.dart";
 
@@ -44,6 +47,7 @@ class FormRow extends StatelessWidget {
 	);
 }
 
+enum VideoState {read, upload}
 
 /// A page to create and upload a new story. 
 class StoryUploaderPage extends StatefulWidget {
@@ -53,11 +57,16 @@ class StoryUploaderPage extends StatefulWidget {
 
 /// A state to manage all the individual fields of [StoryUploaderPage]. 
 class StoryUploaderState extends State<StoryUploaderPage> {
+	static const int bytesPerRead = 1000000;
+	
 	/// The model that builds the story field by field. 
 	StoryBuilderModel model = StoryBuilderModel();
+	final FilePicker filePicker = FilePicker.platform;
 
 	/// If the page is loading. 
 	bool isLoading = false;
+	double videoProgress;
+	VideoState videoState;
 
 	@override
 	Widget build(BuildContext context) => Scaffold(
@@ -94,7 +103,25 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 								aspectRatio: 1.5,
 								child: Placeholder()
 							),
-							const SizedBox(height: 50),
+							if (videoProgress != null) ...[
+								LinearProgressIndicator(value: videoProgress),
+								if (videoState == VideoState.read)
+									const Text("Reading video")
+								else if (videoState == VideoState.upload)
+									const Text("Uploading video")
+							],
+							const SizedBox(height: 10),
+							Row(
+								mainAxisAlignment: MainAxisAlignment.spaceBetween,
+								children: [
+									const Text("Upload a video"),
+									OutlinedButton(
+										child: const Text("Select file"),
+										onPressed: selectFile,
+									)
+								]
+							),
+							const SizedBox(height: 30),
 							FormRow(
 								label: "Catchy first sentence",
 								onSaved: (String value) => model.firstSentence = value,
@@ -125,6 +152,37 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 			)
 		)
 	);
+
+	Future<void> selectFile() async {
+		final FilePickerResult result = await filePicker.pickFiles(
+			type: FileType.video, 
+			withReadStream: true,
+		);
+		if (result == null) {
+			return;
+		}
+		model.video = await readVideo(result.files.first);
+	}
+
+	Future<Uint8List> readVideo(PlatformFile file) async {
+		final int totalReads = file.size ~/ bytesPerRead;
+		int currentRead = 0;
+		final Uint8List bytes = Uint8List(file.size);
+		int index = 0;
+		videoState = VideoState.read;
+		await for (final List<int> newBytes in file.readStream) {
+			bytes.setRange(index, index + newBytes.length, newBytes);
+			index += newBytes.length;
+			setState(() {
+				videoProgress = currentRead++ / totalReads;
+				if (videoProgress == 1) {  // done reading
+					videoProgress = null;
+					model.video = bytes;
+				}
+			});
+		}
+		return bytes;
+	}
 
 	/// Uploads the story inputted by the user. 
 	Future<void> upload(BuildContext context) async {
