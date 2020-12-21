@@ -1,15 +1,13 @@
 const firebase = require("@firebase/rules-unit-testing");
 const fs = require("fs");
-const http = require("http");
-const assert = require('assert');
 
 console.warn = function(str) {}
 
 const PROJECT_ID = "decameron";
 const COVERAGE_URL = `http://localhost:8080/emulator/v1/projects/${PROJECT_ID}:ruleCoverage.html`;
 
-const approvedStory = {isApproved: true}
-const unapprovedStory = {isApproved: false}
+const approvedStory = {isApproved: true, author: {uid: "Hello"}}
+const unapprovedStory = {isApproved: false, author: {uid: "Hello"}}
 
 function getFirestore(auth) {return firebase
 	.initializeTestApp({ projectId: PROJECT_ID, auth })
@@ -25,8 +23,8 @@ before(async () => {
 	const firestore = adminApp.firestore();
 
 	const storiesCollection = firestore.collection("stories");
-	storiesCollection.doc("approved-story").set(approvedStory);
-	storiesCollection.doc("unapproved-story").set(unapprovedStory);
+	await storiesCollection.doc("approved-story").set(approvedStory);
+	await storiesCollection.doc("unapproved-story").set(unapprovedStory);
 });
 
 after(async () => {
