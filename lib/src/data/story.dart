@@ -22,6 +22,9 @@ class Story {
 	/// The full transcript of the story. 
 	final String text;
 
+	/// Whether this story has been approved by a site moderator. 
+	final bool isApproved;
+
 	/// Creates a story. 
 	Story({
 		@required this.createdAt,
@@ -29,6 +32,7 @@ class Story {
 		@required this.title,
 		@required this.firstSentence,
 		@required this.text,
+		this.isApproved = false,
 	});
 
 	/// Reads a story from a JSON object. 
@@ -37,7 +41,8 @@ class Story {
 		author = Author.fromJson(json ["author"]),
 		title = json ["title"],
 		firstSentence = json ["firstSentence"],
-		text = json ["text"];
+		text = json ["text"],
+		isApproved = json ["isApproved"];
 
 	/// The JSON representation of this object. 
 	Map get json => {
@@ -46,5 +51,6 @@ class Story {
 		"title": title,
 		"firstSentence": firstSentence,
 		"text": text,
+		"isApproved": isApproved,
 	};
 }
