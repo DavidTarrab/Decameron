@@ -14,13 +14,11 @@ service cloud.firestore {
     }
         
     // Stories must be approved by moderators first. 
-    // 
-    // Moderators have access to stories before they are approved. 
     function isStoryApproved(document) {
 			return document.data.isApproved;
     }
 
-    /// Makes sure the author cannot change. 
+    /// A story's author cannot change. 
     function didAuthorChange() {
     	return resource.data.author.uid != request.resource.data.author.uid;
     }
