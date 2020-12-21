@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+  	// Moderators can see unpublished stories and approve them.
+  	function isModerator() {
+  	  return request.auth != null 
+  	    &&"isModerator" in request.auth.token 
+  	  	&& request.auth.token.isModerator;
+  	}
+
+    // Makes sure the user's UID matches the UID associated with the story.
+  	function isStoryOwner(document) {
+      return request.auth.uid == document.data.author.uid;
+    }
+        
+    // Stories must be approved by moderators first. 
+    // 
+    // Moderators have access to stories before they are approved. 
+    function isStoryApproved(document) {
+			return document.data.isApproved;
+    }
+
+    /// Makes sure the author cannot change. 
+    function didAuthorChange() {
+    	return resource.data.author.uid != request.resource.data.author.uid;
+    }
+
+    match /stories/{story} {
+      allow read: if isModerator() || isStoryApproved(resource);
+      allow create: if !isStoryApproved(request.resource) 
+      	&& isStoryOwner(request.resource);
+      allow update: if !didAuthorChange() 
+      	&& (isModerator() || !isStoryApproved(request.resource))
+      	&& (isModerator() || isStoryOwner(resource));
+      allow delete: if isModerator() || isStoryOwner(resource);
+    }
+    
+    match /users/{user} {
+    	allow read: if true
+      allow write: if request.auth.uid == user;
+    }
+  }
+}
