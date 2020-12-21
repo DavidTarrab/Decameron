@@ -14,12 +14,16 @@ class FormRow extends StatelessWidget {
 	/// A function to validate the entered string.
 	final FormFieldValidator<String> validator;
 
+	/// The text controller for this text field. 
+	final TextEditingController controller;
+
 	/// Puts a textbox next to a label.
 	const FormRow({
 		@required this.onSaved,
 		@required this.label,
 		this.subtitle,
 		this.validator,
+		this.controller,
 	});
 
 	@override
@@ -36,7 +40,11 @@ class FormRow extends StatelessWidget {
 				),
 				Expanded(
 					flex: 2,
-					child: TextFormField(onSaved: onSaved, validator: validator)
+					child: TextFormField(
+						onSaved: onSaved, 
+						validator: validator, 
+						controller: controller
+					)
 				),
 			]
 		)

@@ -25,6 +25,15 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 	/// The UI controller for the video. 
 	ChewieController chewieController;
 
+	/// Controller for the title. 
+	final TextEditingController titleController = TextEditingController();
+
+	/// Controller for the first sentence. 
+	final TextEditingController firstSentenceController = TextEditingController();
+
+	/// Controller for the transcript.
+	final TextEditingController transcriptController = TextEditingController();
+
 	@override
 	void initState() {
 		super.initState();
@@ -34,6 +43,11 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 	@override
 	void dispose() {
 		model.removeListener(listener);
+		videoController.dispose();
+		chewieController.dispose();
+		titleController.dispose();
+		firstSentenceController.dispose();
+		transcriptController.dispose();
 		super.dispose();
 	}
 
@@ -64,6 +78,7 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 								child: TextFormField(
 									onSaved: (String value) => model.title = value,
 									textAlign: TextAlign.center, 
+									controller: titleController,
 									decoration: const InputDecoration(
 										hintText: "Your amazing story",
 										border: OutlineInputBorder(),
@@ -101,6 +116,7 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 							FormRow(
 								label: "Catchy first sentence",
 								onSaved: (String value) => model.firstSentence = value,
+								controller: firstSentenceController,
 							),
 							const SizedBox(height: 20),
 							const Text("Type out the full story here"),
@@ -108,6 +124,7 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 							TextFormField(
 								onSaved: (String value) => model.text = value,
 								maxLines: null,
+								controller: transcriptController,
 								decoration: const InputDecoration(
 									filled: true,
 									border: OutlineInputBorder()
