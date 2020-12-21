@@ -28,7 +28,7 @@
     }
   },
   "firestore": {
-    "rules": "firebase\\firestore.rules",
-    "indexes": "firebase\\indexes.json"
+    "rules": "firebase_rules\\firestore.rules",
+    "indexes": "firebase_rules\\indexes.json"
   }
 }
