@@ -28,7 +28,6 @@
     }
   },
   "firestore": {
-    "rules": "firebase_rules\\firestore.rules",
-    "indexes": "firebase_rules\\indexes.json"
+    "rules": "firebase_rules\\firestore.rules"
   }
 }
