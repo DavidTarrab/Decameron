@@ -4,8 +4,8 @@ const fs = require("fs");
 const PROJECT_ID = "decameron";
 const COVERAGE_URL = `http://localhost:8080/emulator/v1/projects/${PROJECT_ID}:ruleCoverage.html`;
 
-const approvedStory = {isApproved: true}
-const unapprovedStory = {isApproved: false}
+const approvedStory = {isApproved: true, author: {uid: "Hello"}}
+const unapprovedStory = {isApproved: false, author: {uid: "Hello"}}
 
 function getFirestore(auth) {return firebase
 	.initializeTestApp({ projectId: PROJECT_ID, auth })
