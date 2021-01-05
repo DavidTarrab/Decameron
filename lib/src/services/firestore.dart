@@ -32,6 +32,7 @@ class CloudFirestore extends Database {
 	Future<List<Map>> getRandomStories(int n) async {
 		final String randomKey = storiesCollection.doc().id;
 		final Query query = storiesCollection
+			.where("isApproved", isEqualTo: true)
 			.where(FieldPath.documentId, isGreaterThanOrEqualTo: randomKey)
 			.limit(n);
 		final QuerySnapshot stories = await query.get();
