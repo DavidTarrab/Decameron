@@ -1,49 +1,12 @@
+import "dart:typed_data";
+
 import "package:flutter/material.dart";
+import "package:video_player/video_player.dart";
+import "package:chewie/chewie.dart";
+
 import "package:decameron/models.dart";
-
-/// A widget that puts a [TextFormField] next to a [Text] label. 
-class FormRow extends StatelessWidget {
-	/// The label to show. 
-	final String label;
-
-	/// A smaller hint under the label. 
-	final String subtitle;
-
-	/// A callback for when [FormState.save] is called. 
-	final void Function(String) onSaved;
-
-	/// A function to validate the entered string.
-	final FormFieldValidator<String> validator;
-
-	/// Puts a textbox next to a label.
-	const FormRow({
-		@required this.onSaved,
-		@required this.label,
-		this.subtitle,
-		this.validator,
-	});
-
-	@override
-	Widget build(BuildContext context) => Padding(
-		padding: const EdgeInsets.symmetric(vertical: 10), 
-		child: Row(
-			children: [
-				Expanded(
-					flex: 1, 
-					child: ListTile(
-						title: Text(label),
-						subtitle: Text(subtitle ?? ""),
-					)
-				),
-				Expanded(
-					flex: 2,
-					child: TextFormField(onSaved: onSaved, validator: validator)
-				),
-			]
-		)
-	);
-}
-
+import "package:decameron/widgets.dart";
+import "package:decameron/services.dart";
 
 /// A page to create and upload a new story. 
 class StoryUploaderPage extends StatefulWidget {
@@ -54,15 +17,47 @@ class StoryUploaderPage extends StatefulWidget {
 /// A state to manage all the individual fields of [StoryUploaderPage]. 
 class StoryUploaderState extends State<StoryUploaderPage> {
 	/// The model that builds the story field by field. 
-	StoryBuilderModel model = StoryBuilderModel();
+	final StoryBuilderModel model = StoryBuilderModel();
 
-	/// If the page is loading. 
-	bool isLoading = false;
+	/// The video controller. 
+	VideoPlayerController videoController;
+
+	/// The UI controller for the video. 
+	ChewieController chewieController;
+
+	/// Controller for the title. 
+	final TextEditingController titleController = TextEditingController();
+
+	/// Controller for the first sentence. 
+	final TextEditingController firstSentenceController = TextEditingController();
+
+	/// Controller for the transcript.
+	final TextEditingController transcriptController = TextEditingController();
+
+	@override
+	void initState() {
+		super.initState();
+		model.addListener(listener);
+	}
+
+	@override
+	void dispose() {
+		model.removeListener(listener);
+		videoController.dispose();
+		chewieController.dispose();
+		titleController.dispose();
+		firstSentenceController.dispose();
+		transcriptController.dispose();
+		super.dispose();
+	}
+
+	/// Updates the UI when the underlying data changes. 
+	void listener() => setState(() {});
 
 	@override
 	Widget build(BuildContext context) => Scaffold(
 		appBar: AppBar(title: const Text("Tell a story")),
-		floatingActionButton: !isLoading ? null : FloatingActionButton(
+		floatingActionButton: !model.isLoading ? null : FloatingActionButton(
 			onPressed: null,
 			child: CircularProgressIndicator(
 				valueColor: AlwaysStoppedAnimation(  // has to be an animation
@@ -83,6 +78,7 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 								child: TextFormField(
 									onSaved: (String value) => model.title = value,
 									textAlign: TextAlign.center, 
+									controller: titleController,
 									decoration: const InputDecoration(
 										hintText: "Your amazing story",
 										border: OutlineInputBorder(),
@@ -90,14 +86,37 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 								)
 							),
 							const SizedBox(height: 20),
-							const AspectRatio(
+							AspectRatio(
 								aspectRatio: 1.5,
-								child: Placeholder()
+								child: videoController == null 
+									? const Placeholder() 
+									: Chewie(controller: chewieController),
 							),
-							const SizedBox(height: 50),
+							if (model.videoState != VideoState.done) ...[
+								LinearProgressIndicator(value: model.videoProgress),
+								if (model.videoState == VideoState.reading)
+									const Text("Reading video")
+								else if (model.videoState == VideoState.uploading)
+									const Text("Uploading video")
+								else if (model.videoState == VideoState.displaying)
+									const Text("Displaying video")
+							],
+							const SizedBox(height: 10),
+							Row(
+								mainAxisAlignment: MainAxisAlignment.spaceBetween,
+								children: [
+									const Text("Upload a video"),
+									OutlinedButton(
+										child: const Text("Select file"),
+										onPressed: chooseVideo,
+									)
+								]
+							),
+							const SizedBox(height: 30),
 							FormRow(
 								label: "Catchy first sentence",
 								onSaved: (String value) => model.firstSentence = value,
+								controller: firstSentenceController,
 							),
 							const SizedBox(height: 20),
 							const Text("Type out the full story here"),
@@ -105,6 +124,7 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 							TextFormField(
 								onSaved: (String value) => model.text = value,
 								maxLines: null,
+								controller: transcriptController,
 								decoration: const InputDecoration(
 									filled: true,
 									border: OutlineInputBorder()
@@ -126,16 +146,46 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 		)
 	);
 
+	/// Selects a video from the user's device. 
+	Future<void> chooseVideo() async {
+		// 1. Let user pick a video from their device. 
+		final FilePicker picker = Services.instance.filePicker;
+		final FileOnDevice file = await picker.pickVideo();
+		if (file == null) {
+			return;
+		}
+
+		// 2. Read the file from the device. 
+		model.videoState = VideoState.reading;
+		final Uint8List bytes = await picker.readFile(
+			file,
+			progressCallback: (double progress) => model.videoProgress = progress,
+		);
+
+		// 3. Upload the video to the cloud.
+		await model.uploadVideo(bytes);
+
+		// 4. Display the video in the UI. 
+		model.videoState = VideoState.displaying;
+		// Firebase Storage seems to need time to process it. 
+		await Future.delayed(const Duration(seconds: 1));
+		videoController = VideoPlayerController.network(await model.videoUrl);
+		await videoController.initialize();
+		chewieController = ChewieController(videoPlayerController: videoController);
+		model.videoState = VideoState.done;
+		setState(() {});
+	}
+
 	/// Uploads the story inputted by the user. 
 	Future<void> upload(BuildContext context) async {
-		setState(() => isLoading = true);
+		model.isLoading = true;
 		try {
 			if (!Form.of(context).validate()) {
-				setState(() => isLoading = false);
+				model.isLoading = false;
 				return;
 			}
 			Form.of(context).save();
-			await Models.instance.stories.upload(model.story);
+			await model.upload();
 		} catch (error) {  // ignore: avoid_catches_without_on_clauses
 			Scaffold.of(context).showSnackBar(
 				SnackBar(
@@ -146,10 +196,10 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 					)
 				)
 			);
-			setState(() => isLoading = false);
+			model.isLoading = false;
 			rethrow;
 		}
-		setState(() => isLoading = false);
+		model.isLoading = false;
 		Navigator.of(context).pop();
 	}
 }

@@ -4,6 +4,53 @@ import "package:decameron/models.dart";
 
 import "model_listener.dart";
 
+/// A ListTile that can be a little wider than usual. 
+/// 
+/// Under some conditions, [ListTile] will try to expand horizontally 
+/// without limit. Using [IntrinsicWidth] helps, but if [ListTile.trailing]
+/// is wide, it will cut off [ListTile.title]. 
+/// 
+/// This widget uses a [Row] with proper padding instead of a ListTile. By using
+/// [MainAxisSize.min], we ensure that the widget will not try to expand.
+class WiderListTile extends StatelessWidget {
+	/// The label for this tile. 
+	/// 
+	/// Equivalent to [ListTile.title].
+	final String label;
+
+	/// The leading widget. 
+	/// 
+	/// Equivalent to [ListTile.leading]. 
+	final Widget leading;
+
+	/// The trailing widget.
+	/// 
+	/// Equivalent to [ListTile.trailing].
+	final Widget trailing;
+
+	/// Creates a Row that imitates a ListTile. 
+	const WiderListTile({
+		@required this.label,
+		@required this.leading,
+		@required this.trailing,
+	});
+
+	@override
+	Widget build(BuildContext context) => Padding(
+		padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+		child: Row(
+			mainAxisSize: MainAxisSize.min,
+			children: [
+				if (leading != null) leading, 
+				const SizedBox(width: 16),
+				Text(label, maxLines: 1),
+				const SizedBox(width: 32),
+				if (trailing != null) trailing,
+			]
+		)
+	);
+}
+
 /// A small tile to show the user their authentication status. 
 class UserTile extends StatefulWidget {
 	@override
@@ -12,7 +59,7 @@ class UserTile extends StatefulWidget {
 
 /// The state for [UserTile]. Allows the user to sign in or out. 
 class UserTileState extends State<UserTile> {
-	/// If the user is signing in or out. 
+	/// If the widget is loading. 
 	bool isLoading = false;
 
 	@override
@@ -20,18 +67,18 @@ class UserTileState extends State<UserTile> {
 		model: () => Models.instance.user,
 		shouldDispose: false,
 		builder: (_, UserModel model, __) => model.isSignedIn
-			? ListTile(
-					title: Text("Welcome, ${model.author.first}"),
+			? WiderListTile(
+					label: "Welcome, ${model.author.first}",
 					leading: isLoading 
 						? const CircularProgressIndicator() 
-						: CircleAvatar(child: Text(model.author.first [0])),
+						: CircleAvatar(radius: 16, child: Text(model.author.first [0])),
 					trailing: TextButton(
 						child: const Text("Sign out"),
 						onPressed: () => signOut(model),
 					),
 				)
-			: ListTile(
-					title: const Text("You're not signed in"),
+			: WiderListTile(
+					label: "You're not signed in",
 					leading: isLoading ? const CircularProgressIndicator() : null,
 					trailing: TextButton(
 						onPressed: () => signIn(model),

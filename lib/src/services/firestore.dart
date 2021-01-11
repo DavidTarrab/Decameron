@@ -26,9 +26,13 @@ class CloudFirestore extends Database {
 	Future<void> init() async {}
 
 	@override
+	String getRandomStoryId() => storiesCollection.doc().id;
+
+	@override
 	Future<List<Map>> getRandomStories(int n) async {
 		final String randomKey = storiesCollection.doc().id;
 		final Query query = storiesCollection
+			.where("isApproved", isEqualTo: true)
 			.where(FieldPath.documentId, isGreaterThanOrEqualTo: randomKey)
 			.limit(n);
 		final QuerySnapshot stories = await query.get();
@@ -40,8 +44,8 @@ class CloudFirestore extends Database {
 	}
 
 	@override
-	Future<void> uploadStory(Map json) => 
-		storiesCollection.doc().set(Map<String, dynamic>.from(json));
+	Future<void> uploadStory(Map json, String id) => 
+		storiesCollection.doc(id).set(Map<String, dynamic>.from(json));
 
 	@override
 	Future<Map<String, dynamic>> get userProfile async => 

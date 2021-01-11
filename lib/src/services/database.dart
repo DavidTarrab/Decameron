@@ -9,11 +9,17 @@ abstract class Database extends Service {
 	Future<List<Map>> getRandomStories(int n);
 
 	/// Uploads a story to the database. 
-	Future<void> uploadStory(Map json);
+	Future<void> uploadStory(Map json, String id);
 
 	/// The user profile. 
 	Future<Map> get userProfile;
 
 	/// Creates or updates the user profile. 
 	Future<void> setProfile(Map json);
+
+	/// Gets a random ID for a new story.
+	/// 
+	/// Nothing actually happens with this ID until the story is uploaded 
+	/// using [uploadStory].  
+	String getRandomStoryId();
 }

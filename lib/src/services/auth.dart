@@ -21,6 +21,12 @@ class Auth extends Service {
 	/// The user's account name. 
 	String get username => firebase.currentUser.displayName;
 
+	/// Whether the user has permissions to moderate the site. 
+	Future<bool> get isModerator async {
+		final IdTokenResult token = await firebase.currentUser.getIdTokenResult();
+		return token.claims ["isModerator"] ?? false;
+	}
+
 	// Only sign in when the user asks to. 
 	@override 
 	Future<void> init() async {}
