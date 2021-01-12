@@ -37,6 +37,7 @@ class HomePageState extends State<HomePage> {
 		super.initState();
 		model = Models.instance.stories..addListener(listener);
 		timer = Timer.periodic(HomePage.delay, spawnStory);
+		spawnStory();
 	}
 
 	@override 
