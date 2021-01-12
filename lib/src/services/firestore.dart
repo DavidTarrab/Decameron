@@ -31,12 +31,22 @@ class CloudFirestore extends Database {
 	@override
 	Future<List<Map>> getRandomStories(int n) async {
 		final String randomKey = storiesCollection.doc().id;
-		final Query query = storiesCollection
-			.where("isApproved", isEqualTo: true)
-			.where(FieldPath.documentId, isGreaterThanOrEqualTo: randomKey)
+		final Query approvedStories = storiesCollection
+			.where("isApproved", isEqualTo: true);
+		Query query = approvedStories
+			.where(FieldPath.documentId, isLessThan: randomKey)
 			.limit(n);
-		final QuerySnapshot stories = await query.get();
+		QuerySnapshot stories = await query.get();
 		final List<QueryDocumentSnapshot> snapshots = stories.docs;
+
+		if (snapshots.length < n) {  // get more stories
+			query = approvedStories
+				.where(FieldPath.documentId, isGreaterThanOrEqualTo: randomKey)
+				.limit(n - snapshots.length);
+			stories = await query.get();
+			snapshots.addAll(stories.docs);
+		}
+
 		return [
 			for (final QueryDocumentSnapshot snapshot in snapshots)
 				snapshot.data()
