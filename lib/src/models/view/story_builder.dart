@@ -70,6 +70,7 @@ class StoryBuilderModel with ChangeNotifier {
 		author: Models.instance.user.author,
 		createdAt: DateTime.now(),
 		text: text,
+		id: id,
 	);
 
 	/// The URL to download the video. 

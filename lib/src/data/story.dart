@@ -25,6 +25,9 @@ class Story {
 	/// Whether this story has been approved by a site moderator. 
 	final bool isApproved;
 
+	/// The ID of this story in the database. 
+	final String id;
+
 	/// Creates a story. 
 	Story({
 		@required this.createdAt,
@@ -32,6 +35,7 @@ class Story {
 		@required this.title,
 		@required this.firstSentence,
 		@required this.text,
+		@required this.id,
 		this.isApproved = false,
 	});
 
@@ -42,6 +46,7 @@ class Story {
 		title = json ["title"],
 		firstSentence = json ["firstSentence"],
 		text = json ["text"],
+		id = json ["id"],
 		isApproved = json ["isApproved"];
 
 	/// The JSON representation of this object. 
@@ -52,5 +57,6 @@ class Story {
 		"firstSentence": firstSentence,
 		"text": text,
 		"isApproved": isApproved,
+		"id": id,
 	};
 }
