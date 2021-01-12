@@ -1,6 +1,8 @@
 import "dart:math";
 
 import "package:flutter/material.dart";
+import "package:flutter/rendering.dart";
+import "package:decameron/data.dart";
 
 /// Presents the first sentence of a story. 
 /// 
@@ -27,14 +29,14 @@ class StorySentence extends StatefulWidget {
 	/// How far the text should rotate when the wind is strongest. 
 	static const double maxRotation = pi / 6;  // 30 degrees
 
-	/// The sentence to display. 
-	final String sentence;
+	/// The story to display. 
+	final Story story;
 
 	/// Animates the first sentence of a story. 
 	/// 
 	/// The key is set to the sentence, so that these widgets can be removed 
 	/// from the widget tree without causing issues. 
-	StorySentence(this.sentence) : super(key: ValueKey(sentence));
+	StorySentence(this.story) : super(key: ValueKey(story.firstSentence));
 
 	@override
 	StorySentenceState createState() => StorySentenceState();
@@ -158,15 +160,25 @@ class StorySentenceState extends State<StorySentence>
 			opacity: opacity.value,
 			child: Transform.rotate(
 				angle: angle.value,
-				child: Text(
-					widget.sentence, 
-					textScaleFactor: 1.2,
-					style: TextStyle(
-						color: Colors.white, 
-						letterSpacing: letterSpacing.value
-					),
+				child: MouseRegion(
+					cursor: SystemMouseCursors.click,
+					child: GestureDetector(
+					onTap: launchStory,
+						child: Text(
+							widget.story.firstSentence, 
+							textScaleFactor: 1.2,
+							style: TextStyle(
+								color: Colors.white, 
+								letterSpacing: letterSpacing.value
+							),
+						)
+					)
 				)
 			),
 		)
 	);
+
+	void launchStory() {
+		
+	}
 }

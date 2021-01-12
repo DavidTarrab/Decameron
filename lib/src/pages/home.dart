@@ -2,9 +2,10 @@ import "dart:async";
 
 import "package:flutter/material.dart";
 
-import "package:decameron/widgets.dart";
+import "package:decameron/data.dart";
 import "package:decameron/models.dart";
 import "package:decameron/pages.dart";
+import "package:decameron/widgets.dart";
 
 /// The home page for the Decameron project. 
 class HomePage extends StatefulWidget {
@@ -17,8 +18,8 @@ class HomePage extends StatefulWidget {
 
 /// Controls the fireplace animation. 
 class HomePageState extends State<HomePage> {
-	/// The sentences currently being shown. 
-	final List<String> sentences = [];
+	/// The stories currently being shown. 
+	final List<Story> stories = [];
 
 	/// A timer that waits for one [StorySentence] before spawning another. 
 	Timer timer;
@@ -48,43 +49,40 @@ class HomePageState extends State<HomePage> {
 
 	@override
 	Widget build(BuildContext context) => Scaffold(
-		body: ModelListener<Stories>(
-			model: () => model,
-			builder: (_, Stories stories, __) => Stack(
-				children: [
-					Container(
-						alignment: Alignment.topLeft,
-						padding: const EdgeInsets.all(10),
-						child: Container(
-							decoration: BoxDecoration(
-								border: Border.all(color: Colors.white),
-								borderRadius: BorderRadius.circular(10),
+		body: Stack(
+			children: [
+				Container(
+					alignment: Alignment.topLeft,
+					padding: const EdgeInsets.all(10),
+					child: Container(
+						decoration: BoxDecoration(
+							border: Border.all(color: Colors.white),
+							borderRadius: BorderRadius.circular(10),
+						),
+						child: UserTile(),
+					)
+				),
+				Center(
+					child: Image.network(
+						"https://media3.giphy.com/media/3o6ZsWmtAVZFltTWVi/giphy.gif",
+						scale: 0.5,
+					)
+				),
+				Align(
+					alignment: const Alignment(0, 0.85),
+					child: Builder(
+						builder: (BuildContext context) => TextButton(
+							onPressed: () => uploadStory(context),
+							child: Text(
+								"Tell your own story", 
+								style: Theme.of(context).textTheme.headline5
 							),
-							child: UserTile(),
 						)
-					),
-					Center(
-						child: Image.network(
-							"https://media3.giphy.com/media/3o6ZsWmtAVZFltTWVi/giphy.gif",
-							scale: 0.5,
-						)
-					),
-					Align(
-						alignment: const Alignment(0, 0.85),
-						child: Builder(
-							builder: (BuildContext context) => TextButton(
-								onPressed: () => uploadStory(context),
-								child: Text(
-									"Tell your own story", 
-									style: Theme.of(context).textTheme.headline5
-								),
-							)
-						)
-					),
-					for (final String sentence in sentences)
-						StorySentence(sentence)
-				]
-			)
+					)
+				),
+				for (final Story story in stories)
+					StorySentence(story)
+			]
 		)
 	);
 
@@ -95,9 +93,9 @@ class HomePageState extends State<HomePage> {
 		if (model.randomStories.isEmpty) {
 			return;
 		}
-		setState(() => sentences.add(model.randomStories [index].firstSentence));
-		if (sentences.length > 3) {  // only two [StorySentence]s are visible at once
-			sentences.removeAt(0);  // remove the oldest widget
+		setState(() => stories.add(model.randomStories [index]));
+		if (stories.length > 3) {  // only two [StorySentence]s are visible at once
+			stories.removeAt(0);  // remove the oldest widget
 		}
 		if (++index == model.randomStories.length) {
 			index = 0;
