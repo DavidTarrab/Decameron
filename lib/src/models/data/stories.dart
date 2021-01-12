@@ -37,6 +37,7 @@ class Stories extends Model {
 		notifyListeners();  // updates the fireplace with the new story
 	}
 
+	/// Returns the download URL of this story's video. 
 	Future<String> getVideoUrl(Story story) => 
-		Services.instance.storage.getVideoUrl(null);
+		Services.instance.storage.getVideoUrl(story.id);
 }
