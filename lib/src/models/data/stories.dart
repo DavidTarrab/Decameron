@@ -36,4 +36,7 @@ class Stories extends Model {
 		randomStories = await getRandomStories();
 		notifyListeners();  // updates the fireplace with the new story
 	}
+
+	Future<String> getVideoUrl(Story story) => 
+		Services.instance.storage.getVideoUrl(null);
 }

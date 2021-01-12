@@ -1,4 +1,5 @@
 export "src/pages/home.dart";
+export "src/pages/story.dart";
 export "src/pages/upload.dart";
 
 /// A container class for route names. 
