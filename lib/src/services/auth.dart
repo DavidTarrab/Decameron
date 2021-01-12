@@ -7,7 +7,7 @@ import "service.dart";
 /// This uses the Firebase Auth service and its plugins. 
 class Auth extends Service {
 	/// The Firebase provider. 
-	final FirebaseAuth firebase = FirebaseAuth.instance;
+	static final FirebaseAuth firebase = FirebaseAuth.instance;
 
 	/// The Google Sign-in provider.
 	final GoogleAuthProvider google = GoogleAuthProvider();
@@ -26,6 +26,14 @@ class Auth extends Service {
 		final IdTokenResult token = await firebase.currentUser.getIdTokenResult();
 		return token.claims ["isModerator"] ?? false;
 	}
+
+	/// Passes along changes in the authentication state.
+	/// 
+	/// The type is void since other fields in this class should be used
+	/// instead of the [User] object passed in the original stream. 
+	Stream<bool> status = firebase.userChanges().map(
+		(User user) => user != null
+	);
 
 	// Only sign in when the user asks to. 
 	@override 
