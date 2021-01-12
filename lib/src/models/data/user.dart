@@ -14,11 +14,13 @@ class UserModel extends Model {
 	/// Whether the user is signed in.
 	/// 
 	/// Sign-in is optional, and only required for uploading stories.
-	bool get isSignedIn => Services.instance.auth.isSignedIn;
+	bool get hasData => user != null;
 
 	@override 
-	Future<void> init() async {
-		if (isSignedIn) {
+	Future<void> init([bool isSignedIn]) async {
+		if (isSignedIn == null) {
+			Services.instance.auth.status.listen(init);
+		} else if (isSignedIn) {
 			user = await getUserProfile();
 			author = getAuthor();
 		} else {
@@ -61,7 +63,6 @@ class UserModel extends Model {
 	Future<void> signIn() async {
 		try {
 			await Services.instance.auth.signIn();
-			await init();
 		} catch (error) {
 			await signOut();  // this way the next reload won't error
 			rethrow;  // hand it over to the UI
@@ -71,6 +72,5 @@ class UserModel extends Model {
 	/// Signs the user out. 
 	Future<void> signOut() async {
 		await Services.instance.auth.signOut(); 
-		await init();
 	}
 }
