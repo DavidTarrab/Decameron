@@ -3,6 +3,7 @@ import "dart:math";
 import "package:flutter/material.dart";
 import "package:flutter/rendering.dart";
 import "package:decameron/data.dart";
+import "package:decameron/pages.dart";
 
 /// Presents the first sentence of a story. 
 /// 
@@ -178,7 +179,10 @@ class StorySentenceState extends State<StorySentence>
 		)
 	);
 
-	void launchStory() {
-		
-	}
+	/// Opens the story's full page. 
+	void launchStory() => Navigator.of(context).push(
+		MaterialPageRoute(
+			builder: (_) => StoryPage(widget.story)
+		)
+	);
 }
