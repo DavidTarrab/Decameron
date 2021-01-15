@@ -66,7 +66,7 @@ class UserTileState extends State<UserTile> {
 	Widget build(BuildContext context) => ModelListener<UserModel>(
 		model: () => Models.instance.user,
 		shouldDispose: false,
-		builder: (_, UserModel model, __) => model.isSignedIn
+		builder: (_, UserModel model, __) => model.hasData
 			? WiderListTile(
 					label: "Welcome, ${model.author.first}",
 					leading: isLoading 
