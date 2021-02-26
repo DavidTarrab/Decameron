@@ -49,7 +49,7 @@ class StoryPageState extends State<StoryPage> {
 				),
 
 				Center(
-        			child: Container(
+        				child: Container(
 						constraints: const BoxConstraints(maxWidth: 750),
 						child: ListView(
 							padding: const EdgeInsets.all(10),
