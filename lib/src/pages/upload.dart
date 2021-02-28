@@ -1,8 +1,8 @@
 import "dart:typed_data";
 
 import "package:flutter/material.dart";
-import "package:video_player/video_player.dart";
-import "package:chewie/chewie.dart";
+// import "package:video_player/video_player.dart";
+// import "package:chewie/chewie.dart";
 
 import "package:decameron/models.dart";
 import "package:decameron/widgets.dart";
@@ -19,11 +19,11 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 	/// The model that builds the story field by field. 
 	final StoryBuilderModel model = StoryBuilderModel();
 
-	/// The video controller. 
-	VideoPlayerController videoController;
+	// /// The video controller. 
+	// VideoPlayerController videoController;
 
-	/// The UI controller for the video. 
-	ChewieController chewieController;
+	// /// The UI controller for the video. 
+	// ChewieController chewieController;
 
 	/// Controller for the title. 
 	final TextEditingController titleController = TextEditingController();
@@ -34,6 +34,8 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 	/// Controller for the transcript.
 	final TextEditingController transcriptController = TextEditingController();
 
+	Future<String> url;
+
 	@override
 	void initState() {
 		super.initState();
@@ -43,8 +45,8 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 	@override
 	void dispose() {
 		model.removeListener(listener);
-		videoController.dispose();
-		chewieController.dispose();
+		// videoController?.dispose();
+		// chewieController?.dispose();
 		titleController.dispose();
 		firstSentenceController.dispose();
 		transcriptController.dispose();
@@ -86,12 +88,7 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 								)
 							),
 							const SizedBox(height: 20),
-							AspectRatio(
-								aspectRatio: 1.5,
-								child: videoController == null 
-									? const Placeholder() 
-									: Chewie(controller: chewieController),
-							),
+							VideoPlayer(url),
 							if (model.videoState != VideoState.done) ...[
 								LinearProgressIndicator(value: model.videoProgress),
 								if (model.videoState == VideoState.reading)
@@ -156,7 +153,10 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 		}
 
 		// 2. Read the file from the device. 
-		model.videoState = VideoState.reading;
+		setState(() {
+			url = null; 
+			model.videoState = VideoState.reading;
+		});
 		final Uint8List bytes = await picker.readFile(
 			file,
 			progressCallback: (double progress) => model.videoProgress = progress,
@@ -165,15 +165,10 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 		// 3. Upload the video to the cloud.
 		await model.uploadVideo(bytes);
 
-		// 4. Display the video in the UI. 
-		model.videoState = VideoState.displaying;
-		// Firebase Storage seems to need time to process it. 
-		await Future.delayed(const Duration(seconds: 1));
-		videoController = VideoPlayerController.network(await model.videoUrl);
-		await videoController.initialize();
-		chewieController = ChewieController(videoPlayerController: videoController);
-		model.videoState = VideoState.done;
-		setState(() {});
+		setState(() {
+			url = model.videoUrl;
+			model.videoState = VideoState.done;
+		});
 	}
 
 	/// Uploads the story inputted by the user. 

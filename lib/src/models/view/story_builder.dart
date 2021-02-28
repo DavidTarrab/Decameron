@@ -90,6 +90,8 @@ class StoryBuilderModel with ChangeNotifier {
 				break;
 			}
 		}
+		// Firebase seems to have a delay before the video can be retrieved
+		await Future.delayed(const Duration(seconds: 1));
 	}
 
 	/// Uploads the story to the database. 
