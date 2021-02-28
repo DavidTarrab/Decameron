@@ -22,6 +22,11 @@ class Author {
 		@required this.uid,
 	});
 
+	@override
+	String toString() => name;
+
+	String get name => "$first $last";
+
 	/// Reads an author from a JSON object. 
 	Author.fromJson(Map json) : 
 		first = json ["first"],
