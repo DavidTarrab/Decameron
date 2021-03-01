@@ -1,8 +1,6 @@
 import "dart:typed_data";
 
 import "package:flutter/material.dart";
-// import "package:video_player/video_player.dart";
-// import "package:chewie/chewie.dart";
 
 import "package:decameron/models.dart";
 import "package:decameron/widgets.dart";
@@ -18,12 +16,6 @@ class StoryUploaderPage extends StatefulWidget {
 class StoryUploaderState extends State<StoryUploaderPage> {
 	/// The model that builds the story field by field. 
 	final StoryBuilderModel model = StoryBuilderModel();
-
-	// /// The video controller. 
-	// VideoPlayerController videoController;
-
-	// /// The UI controller for the video. 
-	// ChewieController chewieController;
 
 	/// Controller for the title. 
 	final TextEditingController titleController = TextEditingController();
@@ -93,8 +85,6 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 									const Text("Reading video")
 								else if (model.videoState == VideoState.uploading)
 									const Text("Uploading video")
-								else if (model.videoState == VideoState.displaying)
-									const Text("Displaying video")
 							],
 							const SizedBox(height: 10),
 							Row(
