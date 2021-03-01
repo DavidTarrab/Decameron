@@ -49,29 +49,28 @@ class VideoPlayerState extends State<VideoPlayer> {
     tag: "video-player",
     child: AspectRatio(
 	  	aspectRatio: 1.5,
-	  	child: Stack(
-	  		children: [
-		  		if (!isReady) ...[
+	  	child: isReady
+		  	? Column(
+		  		children: [
+		  			Expanded(child: plugin.VideoPlayer(controller)), 
+		  			SizedBox(
+	  			    height: 100, 
+	  			    child: VideoControls(
+	  			    	controller, 
+	  			    	isFullScreen: widget.isFullScreen,
+	  			  	)
+	  			  ),
+		  		],
+	  		)
+	  		: Stack(
+		  		children: [
 		  			Container(color: Colors.grey [200].withOpacity(0.1)),
 		  			if (hasController) const Align(  // video is just loading
 							alignment: Alignment.bottomCenter, 
 							child: LinearProgressIndicator()
 						)
-		  		] else ...[
-		  			plugin.VideoPlayer(controller), 
-		  			Align(
-		  			  alignment: Alignment.bottomCenter,
-		  			  child: SizedBox(
-		  			    height: 100, 
-		  			    child: VideoControls(
-		  			    	controller, 
-		  			    	isFullScreen: widget.isFullScreen,
-		  			  	)
-		  			  ),
-		  			)
-		  		]
-	  		]
-  		)
+					]
+  			)
 		)
 	);
 }
