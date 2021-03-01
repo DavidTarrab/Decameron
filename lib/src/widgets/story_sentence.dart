@@ -33,11 +33,14 @@ class StorySentence extends StatefulWidget {
 	/// The story to display. 
 	final Story story;
 
+	final VoidCallback callback;
+
 	/// Animates the first sentence of a story. 
 	/// 
 	/// The key is set to the sentence, so that these widgets can be removed 
 	/// from the widget tree without causing issues. 
-	StorySentence(this.story) : super(key: ValueKey(story.firstSentence));
+	StorySentence(this.story, this.callback) : 
+		super(key: ValueKey(story.firstSentence));
 
 	@override
 	StorySentenceState createState() => StorySentenceState();
@@ -74,6 +77,8 @@ class StorySentenceState extends State<StorySentence>
 	/// Controls the opacity of the text. 
 	Animation<double> opacity;
 
+	bool didCallCallback = false;
+
 	/// Initializes the animation controllers. 
 	void initControllers() {
 		controller = AnimationController(
@@ -88,7 +93,7 @@ class StorySentenceState extends State<StorySentence>
 			vsync: this,
 		)
 			..forward()
-			..addListener(listener)
+			..addListener(basicListener)
 			..addStatusListener(initialListener);
 	}
 
@@ -130,12 +135,23 @@ class StorySentenceState extends State<StorySentence>
 		);
 	}
 
+	void listener() {
+		setState(() {});
+		if (controller.value >= 0.5 && !didCallCallback) {
+			didCallCallback = true;
+			widget.callback();
+		}
+	}
+
 	/// Rebuilds the widget on new animation ticks. 
-	void listener() => setState(() {});
+	void basicListener() {
+		setState(() {});
+	}
 
 	/// Listens for when [initialController] finishes, then reverses it. 
 	void initialListener(AnimationStatus status) {
 		if (status == AnimationStatus.completed) {
+			print("Reversing opacity");
 			initialController
 				..duration = StorySentence.animationDuration - StorySentence.fadeInDuration
 				..reverse();
@@ -145,7 +161,7 @@ class StorySentenceState extends State<StorySentence>
 	@override
 	void dispose() {
 		initialController
-			..removeListener(listener)
+			..removeListener(basicListener)
 			..removeStatusListener(initialListener)
 			..dispose();
 		controller

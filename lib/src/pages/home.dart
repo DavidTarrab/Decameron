@@ -21,9 +21,6 @@ class HomePageState extends State<HomePage> {
 	/// The stories currently being shown. 
 	final List<Story> stories = [];
 
-	/// A timer that waits for one [StorySentence] before spawning another. 
-	Timer timer;
-
 	/// The index of [Stories.randomStories] to spawn next. 
 	int index = 0;
 
@@ -37,14 +34,12 @@ class HomePageState extends State<HomePage> {
 	void initState() {
 		super.initState();
 		model = Models.instance.stories..addListener(listener);
-		timer = Timer.periodic(HomePage.delay, spawnStory);
 		spawnStory();
 	}
 
 	@override 
 	void dispose() {
 		model.removeListener(listener);
-		timer.cancel();
 		super.dispose();
 	}
 
@@ -82,7 +77,7 @@ class HomePageState extends State<HomePage> {
 					)
 				),
 				for (final Story story in stories)
-					StorySentence(story)
+					StorySentence(story, spawnStory)
 			]
 		)
 	);
@@ -90,7 +85,7 @@ class HomePageState extends State<HomePage> {
 	/// Spawns a new [StorySentence] on top of the fireplace. 
 	/// 
 	/// Also deletes a story when it is no longer visible.  
-	void spawnStory([Timer timer]) {
+	void spawnStory() {
 		if (model.randomStories.isEmpty) {
 			return;
 		}
