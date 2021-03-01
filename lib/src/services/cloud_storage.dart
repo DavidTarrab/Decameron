@@ -22,8 +22,11 @@ class CloudStorage implements Service {
 	/// 
 	/// Videos are associated with IDs, the same as the document ID for the 
 	/// corresponding story. 
-	Stream<double> uploadVideo(Uint8List data, String id) => 
-		storyVideos.child(id).putData(data).snapshotEvents.map(
+	Stream<double> uploadVideo(Uint8List data, String id, String uid) => 
+		storyVideos.child(id).putData(
+			data,
+			SettableMetadata(customMetadata: {"author": uid}),
+		).snapshotEvents.map(
 			(TaskSnapshot snapshot) => snapshot.bytesTransferred / snapshot.totalBytes
 		);
 

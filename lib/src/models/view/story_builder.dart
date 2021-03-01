@@ -14,9 +14,6 @@ enum VideoState {
 	/// Uploading the video to the cloud. 
 	uploading, 
 
-	/// Displaying the video to the UI. 
-	displaying,
-
 	/// Done, video is ready to show. 
 	done
 }
@@ -82,7 +79,7 @@ class StoryBuilderModel with ChangeNotifier {
 	Future<void> uploadVideo(Uint8List bytes) async {
 		videoState = VideoState.uploading;
 		final Stream<double> videoUploadStream = 
-			Services.instance.storage.uploadVideo(bytes, id);
+			Services.instance.storage.uploadVideo(bytes, id, Services.instance.auth.uid);
 		await for (final double progress in videoUploadStream) {
 			videoProgress = progress;
 			if (progress == 1) {  // stream does not close by itself
