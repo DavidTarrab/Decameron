@@ -34,7 +34,7 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 	/// Controller for the transcript.
 	final TextEditingController transcriptController = TextEditingController();
 
-	Future<String> url;
+	final VideoController videoController = VideoController();
 
 	@override
 	void initState() {
@@ -45,8 +45,6 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 	@override
 	void dispose() {
 		model.removeListener(listener);
-		// videoController?.dispose();
-		// chewieController?.dispose();
 		titleController.dispose();
 		firstSentenceController.dispose();
 		transcriptController.dispose();
@@ -88,7 +86,7 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 								)
 							),
 							const SizedBox(height: 20),
-							VideoPlayer(url),
+							VideoPlayer(videoController),
 							if (model.videoState != VideoState.done) ...[
 								LinearProgressIndicator(value: model.videoProgress),
 								if (model.videoState == VideoState.reading)
@@ -154,7 +152,6 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 
 		// 2. Read the file from the device. 
 		setState(() {
-			url = null; 
 			model.videoState = VideoState.reading;
 		});
 		final Uint8List bytes = await picker.readFile(
@@ -165,10 +162,9 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 		// 3. Upload the video to the cloud.
 		await model.uploadVideo(bytes);
 
-		setState(() {
-			url = model.videoUrl;
-			model.videoState = VideoState.done;
-		});
+		final String url = await model.videoUrl;
+		await videoController.initialize(url);
+		setState(() => model.videoState = VideoState.done);
 	}
 
 	/// Uploads the story inputted by the user. 

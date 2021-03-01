@@ -22,7 +22,19 @@ class StoryPage extends StatefulWidget {
 }
 
 class StoryPageState extends State<StoryPage> {
+	final VideoController controller = VideoController();
 	bool showTranscript = false;
+
+	@override
+	void initState() {
+		super.initState();
+		initVideo();
+	}
+
+	Future<void> initVideo() async {
+		final String url = await Models.instance.stories.getVideoUrl(widget.story);
+		await controller.initialize(url);
+	}
 
 	@override
 	Widget build(BuildContext context) => Scaffold(
@@ -56,7 +68,7 @@ class StoryPageState extends State<StoryPage> {
 								.copyWith(color: Colors.lightBlue [700]),
 						),
 						const SizedBox(height: 10),
-						VideoPlayer(Models.instance.stories.getVideoUrl(widget.story)),
+						VideoPlayer(controller),
 						Text(formatDateTime(context, widget.story.createdAt)),
 						const SizedBox(height: 10),
 						Align(
