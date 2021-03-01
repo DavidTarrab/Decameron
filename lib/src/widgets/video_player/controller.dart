@@ -11,13 +11,12 @@ class VideoController with ChangeNotifier {
 	Future<void> initialize([String url]) async {
 		if (pluginController == null && url == null) {
 			throw ArgumentError("URL must be non-null");
-		} else if (pluginController == null) {
-			pluginController = plugin.VideoPlayerController.network(url)
-				..addListener(notifyListeners);
-			notifyListeners();  // allow widget to show loading indicator
-			await pluginController.initialize();
-			notifyListeners();  // allow widget to show video
 		}
+		pluginController = plugin.VideoPlayerController.network(url)
+			..addListener(notifyListeners);
+		notifyListeners();  // allow widget to show loading indicator
+		await pluginController.initialize();
+		notifyListeners();  // allow widget to show video
 	}
 
 	@override
