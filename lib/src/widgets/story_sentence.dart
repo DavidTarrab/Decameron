@@ -151,7 +151,6 @@ class StorySentenceState extends State<StorySentence>
 	/// Listens for when [initialController] finishes, then reverses it. 
 	void initialListener(AnimationStatus status) {
 		if (status == AnimationStatus.completed) {
-			print("Reversing opacity");
 			initialController
 				..duration = StorySentence.animationDuration - StorySentence.fadeInDuration
 				..reverse();
