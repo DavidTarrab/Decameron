@@ -161,10 +161,10 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 
 		// 3. Upload the video to the cloud.
 		await model.uploadVideo(bytes);
+		setState(() => model.videoState = VideoState.done);
 
 		final String url = await model.videoUrl;
 		await videoController.initialize(url);
-		setState(() => model.videoState = VideoState.done);
 	}
 
 	/// Uploads the story inputted by the user. 
