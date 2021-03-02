@@ -17,6 +17,10 @@ abstract class Database extends Service {
 	/// Creates or updates the user profile. 
 	Future<void> setProfile(Map json);
 
+	Future<List<Map>> get pendingStories;
+
+	Future<void> approveStory(String id);
+
 	/// Gets a random ID for a new story.
 	/// 
 	/// Nothing actually happens with this ID until the story is uploaded 

@@ -64,4 +64,21 @@ class CloudFirestore extends Database {
 	@override
 	Future<void> setProfile(Map json) => 
 		userDocument.set(Map<String, dynamic>.from(json));
+
+	@override
+	Future<void> approveStory(String id) async {
+		final DocumentReference document = storiesCollection.doc(id);
+		await document.update({"isApproved": true});
+	}
+
+	@override
+	Future<List<Map>> get pendingStories async {
+		final Query query = storiesCollection
+			.where("isApproved", isEqualTo: true).limit(10);
+		final QuerySnapshot snapshot = await query.get();
+		return [
+			for (final QueryDocumentSnapshot document in snapshot.docs)
+				document.data()
+		];
+	}
 }
