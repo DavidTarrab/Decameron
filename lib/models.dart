@@ -1,10 +1,16 @@
+import "package:decameron/services.dart";
+
+// Imports
 import "src/models/data/model.dart";
+import "src/models/data/moderator.dart";
 import "src/models/data/stories.dart";
 import "src/models/data/user.dart";
 
+// Exports -- data models
 export "src/models/data/stories.dart";
 export "src/models/data/user.dart";
 
+// Exports -- view models
 export "src/models/view/story_builder.dart";
 
 /// Bundles all the data models in one convenient model. 
@@ -21,10 +27,16 @@ class Models extends Model {
 	/// The user data model.
 	final UserModel user = UserModel();
 
+	Moderator moderator;
+
 	@override
 	Future<void> init() async {
 		await user.init();
 		await stories.init();
+		if (await Services.instance.auth.isModerator) {
+			moderator = Moderator();
+			await moderator.init();
+		}
 	}
 
 	@override
