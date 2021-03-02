@@ -13,6 +13,7 @@ todo
 # Firebase
 .firebase
 .firebaserc
+firebase_credentials.json
 
 # IntelliJ related
 *.iml
