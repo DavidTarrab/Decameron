@@ -1,7 +1,9 @@
 import "package:decameron/data.dart";
 import "package:decameron/services.dart";
+import "package:decameron/models.dart";
 
 import "model.dart";
+import "moderator.dart";
 
 /// A data model for the user profile. 
 class UserModel extends Model {
@@ -16,6 +18,8 @@ class UserModel extends Model {
 	/// Sign-in is optional, and only required for uploading stories.
 	bool get hasData => user != null;
 
+	bool get isModerator => Models.instance.moderator != null;
+
 	@override 
 	Future<void> init([bool isSignedIn]) async {
 		if (isSignedIn == null) {
@@ -23,9 +27,15 @@ class UserModel extends Model {
 		} else if (isSignedIn) {
 			user = await getUserProfile();
 			author = getAuthor();
+			if (await Services.instance.auth.isModerator) {
+				final Moderator moderator = Moderator();
+				await moderator.init();
+				Models.instance.moderator = moderator;
+			}
 		} else {
 			user = null;
 			author = null;
+			Models.instance.moderator = null;
 		}
 		notifyListeners();  // this function may also be called later
 	}
