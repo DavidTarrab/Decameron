@@ -1,5 +1,3 @@
-import "package:decameron/services.dart";
-
 // Imports
 import "src/models/data/model.dart";
 import "src/models/data/moderator.dart";
@@ -7,6 +5,7 @@ import "src/models/data/stories.dart";
 import "src/models/data/user.dart";
 
 // Exports -- data models
+export "src/models/data/moderator.dart";
 export "src/models/data/stories.dart";
 export "src/models/data/user.dart";
 
@@ -33,10 +32,6 @@ class Models extends Model {
 	Future<void> init() async {
 		await user.init();
 		await stories.init();
-		if (await Services.instance.auth.isModerator) {
-			moderator = Moderator();
-			await moderator.init();
-		}
 	}
 
 	@override
