@@ -80,8 +80,7 @@ class VideoControlsState extends State<VideoControls> {
         	)
 	      )
 	    );
-      // save some data before we reinitialize. 
-      await Future.delayed(const Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 250));
 	    await widget.controller.initialize();
 	    await seek(result.position);
 	    if (result.isPlaying) {

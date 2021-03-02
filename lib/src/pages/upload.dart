@@ -99,7 +99,7 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 							),
 							const SizedBox(height: 30),
 							FormRow(
-								label: "Catchy first sentence",
+								label: "Captivating first sentence",
 								onSaved: (String value) => model.firstSentence = value,
 								controller: firstSentenceController,
 							),
