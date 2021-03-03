@@ -25,6 +25,9 @@ class StoryPageState extends State<StoryPage> {
 	final VideoController controller = VideoController();
 	bool showTranscript = false;
 
+	bool get needsApproval => 
+		Models.instance.user.isModerator && !widget.story.isApproved;
+
 	@override
 	void initState() {
 		super.initState();
@@ -39,6 +42,12 @@ class StoryPageState extends State<StoryPage> {
 	@override
 	Widget build(BuildContext context) => Scaffold(
 		appBar: AppBar(title: const Text("View story")),
+		floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+		floatingActionButton: !needsApproval ? null : FloatingActionButton.extended(
+			icon: const Icon(Icons.approval),
+			label: const Text("Approve this story"),
+			onPressed: () => Models.instance.moderator.approveStory(widget.story),
+		),
 		body: Center(
 			child: ConstrainedBox(
 				constraints: const BoxConstraints(maxWidth: 750),
@@ -85,15 +94,6 @@ class StoryPageState extends State<StoryPage> {
 							)
 						),
 						if (showTranscript) Text(widget.story.text),
-						if (Models.instance.user.isModerator && !widget.story.isApproved)
-							SizedBox(
-								width: 250, 
-								child: RaisedButton.icon(
-									icon: const Icon(Icons.approval),
-									label: const Text("Approve this story"),
-									onPressed: () => Models.instance.moderator.approveStory(widget.story),
-								)
-							)
 					]
 				)
 			)
