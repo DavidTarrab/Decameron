@@ -133,14 +133,18 @@ class UserPanel extends StatelessWidget {
 					if (
 						model.isModerator 
 						&& Models.instance.moderator.pendingStories.isNotEmpty
-					) TextButton.icon(
-						icon: const Icon(Icons.fact_check),
-						onPressed: () => Navigator.of(context)
-							.pushNamed(Routes.moderator),
-						label: Text(
-							"Click to moderate pending stories", 
-							style: Theme.of(context).textTheme.button,
-						),
+					) ModelListener<Moderator>(
+						model: () => Models.instance.moderator,
+						shouldDispose: false,
+						builder: (_, Moderator moderatorModel, __) => TextButton.icon(
+							icon: const Icon(Icons.fact_check),
+							onPressed: () => Navigator.of(context)
+								.pushNamed(Routes.moderator),
+							label: Text(
+								"Click to moderate pending stories", 
+								style: Theme.of(context).textTheme.button,
+							),
+						)
 					),
 				]
 			)
