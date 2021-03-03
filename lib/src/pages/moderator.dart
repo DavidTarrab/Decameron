@@ -12,6 +12,22 @@ class ModeratorPage extends StatefulWidget {
 }
 
 class ModeratorPageState extends State<ModeratorPage> {
+	Moderator model;
+
+	void listener() => setState(() {});
+
+	@override
+	void initState() {
+		super.initState();
+		model = Models.instance.moderator..addListener(listener);
+	}
+
+	@override
+	void dispose() {
+		model.removeListener(listener);
+		super.dispose();
+	}
+
 	@override
 	Widget build(BuildContext context) => Scaffold(
 		appBar: AppBar(title: const Text("Moderation")),

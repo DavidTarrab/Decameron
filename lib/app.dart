@@ -22,6 +22,7 @@ class DecameronState extends State<Decameron> {
     title: "Decameron",
     theme: ThemeData(
       primarySwatch: Colors.red,
+      accentColor: Colors.orange,
       scaffoldBackgroundColor: Colors.black,
       visualDensity: VisualDensity.adaptivePlatformDensity,
       brightness: Brightness.dark,

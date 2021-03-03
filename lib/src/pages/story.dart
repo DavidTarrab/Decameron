@@ -24,6 +24,7 @@ class StoryPage extends StatefulWidget {
 class StoryPageState extends State<StoryPage> {
 	final VideoController controller = VideoController();
 	bool showTranscript = false;
+	bool isLoading = false;
 
 	bool get needsApproval => 
 		Models.instance.user.isModerator && !widget.story.isApproved;
@@ -39,14 +40,27 @@ class StoryPageState extends State<StoryPage> {
 		await controller.initialize(url);
 	}
 
+	Future<void> approve() async {
+		setState(() => isLoading = true);
+		await Models.instance.moderator.approveStory(widget.story);
+		setState(() => isLoading = false);
+		Navigator.of(context).pop();
+	}
+
 	@override
 	Widget build(BuildContext context) => Scaffold(
 		appBar: AppBar(title: const Text("View story")),
 		floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
 		floatingActionButton: !needsApproval ? null : FloatingActionButton.extended(
-			icon: const Icon(Icons.approval),
+			icon: !isLoading 
+				? const Icon(Icons.approval)
+				: CircularProgressIndicator(
+					valueColor: AlwaysStoppedAnimation(
+						Theme.of(context).colorScheme.onSecondary
+					),
+				),
 			label: const Text("Approve this story"),
-			onPressed: () => Models.instance.moderator.approveStory(widget.story),
+			onPressed: approve
 		),
 		body: Center(
 			child: ConstrainedBox(
@@ -60,14 +74,10 @@ class StoryPageState extends State<StoryPage> {
 							style: Theme.of(context).textTheme.headline3
 						),              
 						Center(
-						  // TODO: view author's other stories
-							// child: TextButton(
-								// onPressed: null,
-								child: Text(
-									"By: ${widget.story.author}",
-									style: Theme.of(context).textTheme.headline5,
-								)
-							// )
+							child: Text(
+								"By: ${widget.story.author}",
+								style: Theme.of(context).textTheme.headline5,
+							)
 						),
 						const SizedBox(height: 20),
 						Text(
