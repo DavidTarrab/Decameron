@@ -47,7 +47,7 @@ class HomePageState extends State<HomePage> {
 	Widget build(BuildContext context) => Scaffold(
 		body: Stack(
 			children: [
-				UserControls(),
+				UserPanel(),
 				Center(
 					child: Image.network(
 						"https://media3.giphy.com/media/3o6ZsWmtAVZFltTWVi/giphy.gif",
