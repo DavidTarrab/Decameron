@@ -21,9 +21,9 @@ class VideoController with ChangeNotifier {
 
 	@override
 	void dispose() {
-		pluginController
-			..removeListener(notifyListeners)
-			..dispose();
+		// Cannot use cascade with null-aware. 
+		pluginController?.removeListener(notifyListeners);
+		pluginController?.dispose();
 		super.dispose();
 	}
 }
