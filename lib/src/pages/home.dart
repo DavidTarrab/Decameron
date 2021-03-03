@@ -47,17 +47,7 @@ class HomePageState extends State<HomePage> {
 	Widget build(BuildContext context) => Scaffold(
 		body: Stack(
 			children: [
-				Container(
-					alignment: Alignment.topLeft,
-					padding: const EdgeInsets.all(10),
-					child: Container(
-						decoration: BoxDecoration(
-							border: Border.all(color: Colors.white),
-							borderRadius: BorderRadius.circular(10),
-						),
-						child: UserTile(),
-					)
-				),
+				UserControls(),
 				Center(
 					child: Image.network(
 						"https://media3.giphy.com/media/3o6ZsWmtAVZFltTWVi/giphy.gif",

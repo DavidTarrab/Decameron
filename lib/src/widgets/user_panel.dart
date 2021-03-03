@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 
 import "package:decameron/models.dart";
+import "package:decameron/pages.dart";
 
 import "model_listener.dart";
 
@@ -53,6 +54,9 @@ class WiderListTile extends StatelessWidget {
 
 /// A small tile to show the user their authentication status. 
 class UserTile extends StatefulWidget {
+	final UserModel model;
+	const UserTile(this.model);
+
 	@override
 	UserTileState createState() => UserTileState();
 }
@@ -63,25 +67,27 @@ class UserTileState extends State<UserTile> {
 	bool isLoading = false;
 
 	@override
-	Widget build(BuildContext context) => ModelListener<UserModel>(
-		model: () => Models.instance.user,
-		shouldDispose: false,
-		builder: (_, UserModel model, __) => model.hasData
+	Widget build(BuildContext context) => Container(
+		decoration: BoxDecoration(
+			border: Border.all(color: Colors.white),
+			borderRadius: BorderRadius.circular(10),
+		),
+		child: widget.model.hasData
 			? WiderListTile(
-					label: "Welcome, ${model.author.first}",
+					label: "Welcome, ${widget.model.author.first}",
 					leading: isLoading 
 						? const CircularProgressIndicator() 
-						: CircleAvatar(radius: 16, child: Text(model.author.first [0])),
+						: CircleAvatar(radius: 16, child: Text(widget.model.author.first [0])),
 					trailing: TextButton(
 						child: const Text("Sign out"),
-						onPressed: () => signOut(model),
+						onPressed: () => signOut(widget.model),
 					),
 				)
 			: WiderListTile(
 					label: "You're not signed in",
 					leading: isLoading ? const CircularProgressIndicator() : null,
 					trailing: TextButton(
-						onPressed: () => signIn(model),
+						onPressed: () => signIn(widget.model),
 						child: const Text("Sign in"),
 					)
 				)
@@ -110,4 +116,32 @@ class UserTileState extends State<UserTile> {
 		await model.signOut();
 		setState(() => isLoading = false);
 	}
+}
+
+class UserPanel extends StatelessWidget {
+	@override
+	Widget build(BuildContext context) => ModelListener<UserModel>(
+		model: () => Models.instance.user,
+		shouldDispose: false,
+		builder: (_, UserModel model, __) => Container(
+			padding: const EdgeInsets.all(10),
+			alignment: Alignment.topLeft,
+			child: Column(
+				children: [
+					UserTile(model),
+					const SizedBox(height: 10),
+					if (Models.instance.user.isModerator)
+						TextButton.icon(
+							icon: const Icon(Icons.fact_check),
+							onPressed: () => Navigator.of(context)
+								.pushNamed(Routes.moderator),
+							label: Text(
+								"Click to moderate pending stories", 
+								style: Theme.of(context).textTheme.button,
+							),
+						),
+				]
+			)
+		)
+	);
 }
