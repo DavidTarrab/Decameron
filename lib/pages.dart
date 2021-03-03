@@ -1,7 +1,7 @@
 export "src/pages/error.dart";
 export "src/pages/home.dart";
 export "src/pages/moderator.dart";
-export "src/pages/splash.dart";
+export "src/pages/route_initializer.dart";
 export "src/pages/story.dart";
 export "src/pages/upload.dart";
 
