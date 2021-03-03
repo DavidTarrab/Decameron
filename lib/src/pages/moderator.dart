@@ -31,18 +31,13 @@ class ModeratorPageState extends State<ModeratorPage> {
 	@override
 	Widget build(BuildContext context) => Scaffold(
 		appBar: AppBar(title: const Text("Moderation")),
-		body: FutureBuilder<List<Story>>(
-			future: Models.instance.moderator.pendingStories,
-			builder: (_, AsyncSnapshot snapshot) => !snapshot.hasData
-				? const Center(child: CircularProgressIndicator())
-				: snapshot.data.length == 0
-					? const Center(child: Text("No stories are pending approval."))
-					: ListView(
-						children: [
-							for (final Story story in snapshot.data)
-								UnapprovedStoryWidget(story)
-						]
-					)
+		body: model.pendingStories.isEmpty
+			? const Center(child: Text("No stories are pending approval."))
+			: ListView(
+				children: [
+					for (final Story story in model.pendingStories)
+						UnapprovedStoryWidget(story)
+				]
 			)
 	);
 }
