@@ -26,12 +26,15 @@ class Models extends Model {
 	/// The user data model.
 	final UserModel user = UserModel();
 
+	bool isReady = false;
+
 	Moderator moderator;
 
 	@override
 	Future<void> init() async {
 		await user.init();
 		await stories.init();
+		isReady = true;
 	}
 
 	@override

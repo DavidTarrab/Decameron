@@ -14,24 +14,8 @@ class Decameron extends StatefulWidget {
 
 /// Initializes the services and data models for the app. 
 class DecameronState extends State<Decameron> {
-  Future<bool> initFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    initFuture = init();
-  }
-
-  /// Initializes the services and data models. 
-  Future<bool> init() async {
-    try {
-      await Services.instance.init();
-      await Models.instance.init();
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
+  bool get isReady => Services.instance.isReady
+    && Models.instance.isReady;
 
   @override
   Widget build(BuildContext context) => MaterialApp(
@@ -42,40 +26,30 @@ class DecameronState extends State<Decameron> {
       visualDensity: VisualDensity.adaptivePlatformDensity,
       brightness: Brightness.dark,
     ),
-    home: FutureBuilder<void>(
-      future: initFuture,
-      builder: (_, AsyncSnapshot snapshot) => !snapshot.hasData
-        ? const Center(child: CircularProgressIndicator())
-        : snapshot.data 
-          ? HomePage()
-          : ErrorPage()
-    ),
-    routes: {
-      Routes.home: (_) => HomePage(),
-      Routes.upload: (_) => StoryUploaderPage(),
-      Routes.moderator: (_) => ModeratorPage(),
-    },
+    initialRoute: Routes.splash,
+    onGenerateRoute: (RouteSettings settings) => 
+      MaterialPageRoute(builder: getRoute(settings.name))
   );
-}
 
-class ErrorPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    body: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "We're experiencing some issues", 
-            style: Theme.of(context).textTheme.headline2
-          ),
-          const SizedBox(height: 50),
-          Text(
-            "Please try again later", 
-            style: Theme.of(context).textTheme.headline4
-          ),
-        ],
-      )
-    )
-  );
+  WidgetBuilder getRoute(String name) {
+    if (!isReady) {
+      return (_) => SplashScreen();
+    }
+    switch (name) {
+      case Routes.splash: return (_) => SplashScreen();
+      case Routes.error: return (_) => ErrorPage();
+      case Routes.home: return (_) => HomePage();
+      case Routes.upload: 
+        if (Models.instance.user.hasData) {
+          return (_) => StoryUploaderPage();
+        }
+        break;
+      case Routes.moderator: 
+        if (Models.instance.user.isModerator) {
+          return (_) => ModeratorPage();
+        }
+        break;
+    }
+    return (_) => HomePage();  // default to HomePage
+  } 
 }

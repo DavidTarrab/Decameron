@@ -27,9 +27,12 @@ class Services extends Service {
 	/// The file picker plugin.
 	final FilePicker filePicker = FilePicker();
 
+	bool isReady = false;
+
 	@override
 	Future<void> init() async {
 		await database.init();
 		await storage.init();
+		isReady = true;
 	}
 }

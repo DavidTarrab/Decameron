@@ -1,5 +1,7 @@
+export "src/pages/error.dart";
 export "src/pages/home.dart";
 export "src/pages/moderator.dart";
+export "src/pages/splash.dart";
 export "src/pages/story.dart";
 export "src/pages/upload.dart";
 
@@ -12,4 +14,8 @@ class Routes {
 	static const String upload = "upload";
 
 	static const String moderator = "moderator";
+
+	static const String error = "error";
+
+	static const String splash = "splash";
 }
