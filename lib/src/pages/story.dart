@@ -84,7 +84,16 @@ class StoryPageState extends State<StoryPage> {
 								)
 							)
 						),
-						if (showTranscript) Text(widget.story.text)
+						if (showTranscript) Text(widget.story.text),
+						if (Models.instance.user.isModerator && !widget.story.isApproved)
+							SizedBox(
+								width: 250, 
+								child: RaisedButton.icon(
+									icon: const Icon(Icons.approval),
+									label: const Text("Approve this story"),
+									onPressed: () => Models.instance.moderator.approveStory(widget.story),
+								)
+							)
 					]
 				)
 			)
