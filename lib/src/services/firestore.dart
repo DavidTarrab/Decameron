@@ -74,7 +74,7 @@ class CloudFirestore extends Database {
 	@override
 	Future<List<Map>> get pendingStories async {
 		final Query query = storiesCollection
-			.where("isApproved", isEqualTo: true).limit(10);
+			.where("isApproved", isEqualTo: false).limit(10);
 		final QuerySnapshot snapshot = await query.get();
 		return [
 			for (final QueryDocumentSnapshot document in snapshot.docs)
