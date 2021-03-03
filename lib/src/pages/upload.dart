@@ -28,6 +28,8 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 
 	final VideoController videoController = VideoController();
 
+	bool didSelectVideo = false;
+
 	@override
 	void initState() {
 		super.initState();
@@ -45,6 +47,9 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 
 	/// Updates the UI when the underlying data changes. 
 	void listener() => setState(() {});
+
+	String nonEmptyValidator(String value) => value.isNotEmpty
+		? null : "This field cannot be empty";
 
 	@override
 	Widget build(BuildContext context) => Scaffold(
@@ -69,6 +74,7 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 								widthFactor: 2/3,
 								child: TextFormField(
 									onSaved: (String value) => model.title = value,
+									validator: nonEmptyValidator,
 									textAlign: TextAlign.center, 
 									controller: titleController,
 									decoration: const InputDecoration(
@@ -87,20 +93,35 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 									const Text("Uploading video")
 							],
 							const SizedBox(height: 10),
-							Row(
-								mainAxisAlignment: MainAxisAlignment.spaceBetween,
-								children: [
-									const Text("Upload a video"),
-									OutlinedButton(
-										child: const Text("Select file"),
-										onPressed: chooseVideo,
-									)
-								]
+							FormField(
+								validator: (_) => didSelectVideo ? null : "Please select a video",
+								builder: (FormFieldState state) => Column(
+									crossAxisAlignment: CrossAxisAlignment.start,
+									children: [
+										Row(
+											mainAxisAlignment: MainAxisAlignment.spaceBetween,
+											children: [
+												const Text("Upload a video"),
+												OutlinedButton(
+													child: const Text("Select file"),
+													onPressed: chooseVideo,
+												)
+											]
+										),
+										if (state.hasError)
+											Text(
+												state.errorText, 
+												style: Theme.of(context).textTheme.caption
+													.copyWith(color: Theme.of(context).colorScheme.error)
+											),
+									]
+								),
 							),
 							const SizedBox(height: 30),
 							FormRow(
 								label: "Captivating first sentence",
 								onSaved: (String value) => model.firstSentence = value,
+								validator: nonEmptyValidator,
 								controller: firstSentenceController,
 							),
 							const SizedBox(height: 20),
@@ -108,6 +129,7 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 							const SizedBox(height: 10),
 							TextFormField(
 								onSaved: (String value) => model.text = value,
+								validator: nonEmptyValidator,
 								maxLines: null,
 								controller: transcriptController,
 								decoration: const InputDecoration(
@@ -155,13 +177,21 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 
 		final String url = await model.videoUrl;
 		await videoController.initialize(url);
+		setState(() => didSelectVideo = true);
 	}
 
+	
+	
 	/// Uploads the story inputted by the user. 
 	Future<void> upload(BuildContext context) async {
 		model.isLoading = true;
 		try {
 			if (!Form.of(context).validate()) {
+				Scaffold.of(context).showSnackBar(
+					const SnackBar(
+						content: Text("Please complete the required fields before submitting")
+					),
+				);
 				model.isLoading = false;
 				return;
 			}
