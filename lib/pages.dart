@@ -1,4 +1,5 @@
 export "src/pages/home.dart";
+export "src/pages/moderator.dart";
 export "src/pages/story.dart";
 export "src/pages/upload.dart";
 
@@ -9,4 +10,6 @@ class Routes {
 
 	/// The route name for the upload page.
 	static const String upload = "upload";
+
+	static const String moderator = "moderator";
 }

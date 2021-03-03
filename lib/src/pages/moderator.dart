@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 
 import "package:decameron/data.dart";
 import "package:decameron/models.dart";
+import "package:decameron/pages.dart";
 
 import "story.dart";
 
@@ -13,7 +14,7 @@ class ModeratorPage extends StatefulWidget {
 class ModeratorPageState extends State<ModeratorPage> {
 	@override
 	Widget build(BuildContext context) => Scaffold(
-		appBar: AppBar(title: const Text("Moderator Page")),
+		appBar: AppBar(title: const Text("Moderation")),
 		body: FutureBuilder<List<Story>>(
 			future: Models.instance.moderator.pendingStories,
 			builder: (_, AsyncSnapshot snapshot) => !snapshot.hasData
