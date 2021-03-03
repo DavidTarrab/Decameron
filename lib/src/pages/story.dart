@@ -47,9 +47,51 @@ class StoryPageState extends State<StoryPage> {
 		Navigator.of(context).pop();
 	}
 
+	Future<void> delete() async {
+		final bool confirmation = await showDialog(
+			context: context, 
+			builder: (_) => AlertDialog(
+				title: const Text("Confirm"),
+				content: const Text(
+					"Are you sure you want to delete this story? This action cannot be undone."
+				),
+				actions: [
+					TextButton(
+						child: const Text("Cancel"), 
+						onPressed: () => Navigator.of(context).pop(false)
+					),
+					ElevatedButton(
+						child: const Text("OK"), 
+						onPressed: () => Navigator.of(context).pop(true)
+					),
+				]
+			)
+		);
+		if (confirmation == true) {
+			await Models.instance.moderator.deleteStory(widget.story);
+			Navigator.of(context).pop();
+		}
+	}
+
 	@override
 	Widget build(BuildContext context) => Scaffold(
-		appBar: AppBar(title: const Text("View story")),
+		appBar: AppBar(
+			title: const Text("View story"),
+			actions: [
+				if (Models.instance.user.isModerator)
+					PopupMenuButton<bool>(
+						icon: const Icon(Icons.more_vert),
+						itemBuilder: (_) => const [
+							 PopupMenuItem(value: true, child: Text("Delete story")),
+						],
+						onSelected: (bool value) {
+							if (value == true) {
+								delete();
+							}
+						}
+					)
+			]
+		),
 		floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
 		floatingActionButton: !needsApproval ? null : FloatingActionButton.extended(
 			icon: !isLoading 

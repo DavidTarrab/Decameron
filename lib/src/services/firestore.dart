@@ -81,4 +81,8 @@ class CloudFirestore extends Database {
 				document.data()
 		];
 	}
+
+	@override
+	Future<void> deleteStory(String id) => 
+		storiesCollection.doc(id).delete();
 }
