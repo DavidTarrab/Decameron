@@ -48,6 +48,14 @@ class HomePageState extends State<HomePage> {
 		body: Stack(
 			children: [
 				UserPanel(),
+				Container(
+					alignment: Alignment.bottomRight,
+					padding: const EdgeInsets.all(50),
+					child: TextButton(
+						child: const Text("About", textScaleFactor: 1.2),
+						onPressed: () => Navigator.of(context).pushNamed(Routes.about),
+					),
+				),
 				Center(
 					child: Image.network(
 						"https://media3.giphy.com/media/3o6ZsWmtAVZFltTWVi/giphy.gif",

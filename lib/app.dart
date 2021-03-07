@@ -31,6 +31,7 @@ class DecameronState extends State<Decameron> {
     routes: {
       Routes.error: (_) => ErrorPage(),
       Routes.home: (_) => RouteInitializer(builder: (_) => HomePage()),
+      Routes.about: (_) => AboutPage(),
       Routes.upload: (_) => RouteInitializer(
         builder: (_) => StoryUploaderPage(),
         isAllowed: () => Models.instance.user.hasData

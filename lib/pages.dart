@@ -1,3 +1,4 @@
+export "src/pages/about.dart";
 export "src/pages/error.dart";
 export "src/pages/home.dart";
 export "src/pages/moderator.dart";
@@ -18,4 +19,6 @@ class Routes {
 	static const String error = "error";
 
 	static const String splash = "splash";
+
+	static const String about = "about";
 }
