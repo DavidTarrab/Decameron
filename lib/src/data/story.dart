@@ -28,6 +28,8 @@ class Story {
 	/// The ID of this story in the database. 
 	final String id;
 
+	final bool hasVideo;
+
 	/// Creates a story. 
 	Story({
 		@required this.createdAt,
@@ -36,6 +38,7 @@ class Story {
 		@required this.firstSentence,
 		@required this.text,
 		@required this.id,
+		@required this.hasVideo,
 		this.isApproved = false,
 	});
 
@@ -47,6 +50,7 @@ class Story {
 		firstSentence = json ["firstSentence"],
 		text = json ["text"],
 		id = json ["id"],
+		hasVideo = json ["hasVideo"],
 		isApproved = json ["isApproved"];
 
 	/// The JSON representation of this object. 
@@ -57,6 +61,7 @@ class Story {
 		"firstSentence": firstSentence,
 		"text": text,
 		"isApproved": isApproved,
+		"hasVideo": hasVideo,
 		"id": id,
 	};
 }

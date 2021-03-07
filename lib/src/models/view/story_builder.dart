@@ -12,7 +12,7 @@ enum VideoState {
 	reading, 
 
 	/// Uploading the video to the cloud. 
-	uploading, 
+	uploading,
 
 	/// Done, video is ready to show. 
 	done
@@ -34,6 +34,8 @@ class StoryBuilderModel with ChangeNotifier {
 	/// 
 	/// This will be used as the document ID in the stories collection.
 	String id;
+
+	bool didSelectVideo = false;
 
 	/// The state of video loading. 
 	VideoState videoState = VideoState.done;
@@ -67,6 +69,7 @@ class StoryBuilderModel with ChangeNotifier {
 		author: Models.instance.user.author,
 		createdAt: DateTime.now(),
 		text: text,
+		hasVideo: didSelectVideo,
 		id: id,
 	);
 

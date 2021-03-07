@@ -36,6 +36,9 @@ class StoryPageState extends State<StoryPage> {
 	}
 
 	Future<void> initVideo() async {
+		if (!widget.story.hasVideo) {
+			return;
+		}
 		final String url = await Models.instance.stories.getVideoUrl(widget.story);
 		await controller.initialize(url);
 	}
@@ -129,10 +132,11 @@ class StoryPageState extends State<StoryPage> {
 								.copyWith(color: Colors.lightBlue [700]),
 						),
 						const SizedBox(height: 10),
-						VideoPlayer(controller),
+						if (widget.story.hasVideo)
+							VideoPlayer(controller),
 						Text(formatDateTime(context, widget.story.createdAt)),
 						const SizedBox(height: 10),
-						Align(
+						if (widget.story.hasVideo) Align(
 							alignment: Alignment.centerLeft, 
 							child: TextButton(
 								onPressed: () => setState(() => showTranscript = !showTranscript),
@@ -145,7 +149,7 @@ class StoryPageState extends State<StoryPage> {
 								)
 							)
 						),
-						if (showTranscript) Text(widget.story.text),
+						if (showTranscript || !widget.story.hasVideo) Text(widget.story.text),
 					]
 				)
 			)

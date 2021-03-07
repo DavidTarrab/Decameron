@@ -28,8 +28,6 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 
 	final VideoController videoController = VideoController();
 
-	bool didSelectVideo = false;
-
 	@override
 	void initState() {
 		super.initState();
@@ -93,29 +91,15 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 									const Text("Uploading video")
 							],
 							const SizedBox(height: 10),
-							FormField(
-								validator: (_) => didSelectVideo ? null : "Please select a video",
-								builder: (FormFieldState state) => Column(
-									crossAxisAlignment: CrossAxisAlignment.start,
-									children: [
-										Row(
-											mainAxisAlignment: MainAxisAlignment.spaceBetween,
-											children: [
-												const Text("Upload a video"),
-												OutlinedButton(
-													child: const Text("Select file"),
-													onPressed: chooseVideo,
-												)
-											]
-										),
-										if (state.hasError)
-											Text(
-												state.errorText, 
-												style: Theme.of(context).textTheme.caption
-													.copyWith(color: Theme.of(context).colorScheme.error)
-											),
-									]
-								),
+							Row(
+								mainAxisAlignment: MainAxisAlignment.spaceBetween,
+								children: [
+									const Text("Upload a video"),
+									OutlinedButton(
+										child: const Text("Select file"),
+										onPressed: chooseVideo,
+									)
+								]
 							),
 							const SizedBox(height: 30),
 							FormRow(
@@ -177,10 +161,8 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 
 		final String url = await model.videoUrl;
 		await videoController.initialize(url);
-		setState(() => didSelectVideo = true);
+		model.didSelectVideo = true;
 	}
-
-	
 	
 	/// Uploads the story inputted by the user. 
 	Future<void> upload(BuildContext context) async {
