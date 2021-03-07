@@ -117,6 +117,7 @@ class StoryPageState extends State<StoryPage> {
 							widget.story.title,
 							textAlign: TextAlign.center,
 							style: Theme.of(context).textTheme.headline3
+								.copyWith(fontFamily: "Spectral", fontWeight: FontWeight.w800)
 						),              
 						Center(
 							child: Text(
