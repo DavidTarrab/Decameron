@@ -19,10 +19,10 @@ import "package:decameron/pages.dart";
 /// 5. The font size, as the text dissipates. 
 class StorySentence extends StatefulWidget {
 	/// How long the entire animation should last. 
-	static const Duration animationDuration = Duration(seconds: 15);
+	static const Duration animationDuration = Duration(seconds: 20);
 
 	/// How long it should take for the text to become visible. 
-	static const Duration fadeInDuration = Duration(seconds: 3);
+	static const Duration fadeInDuration = Duration(seconds: 5);
 
 	/// How the text should space itself over time. 
 	static final Tween<double> letterSpacingTween = Tween(begin: -2, end: 4);
@@ -177,11 +177,11 @@ class StorySentenceState extends State<StorySentence>
 			child: Transform.rotate(
 				angle: angle.value,
 				child: MouseRegion(
-					cursor: SystemMouseCursors.click,
-					child: GestureDetector(
-					onTap: launchStory,
+				  cursor: SystemMouseCursors.click,
+			    child: GestureDetector(
+						onTap: launchStory,
 						child: Text(
-							widget.story.firstSentence, 
+							"\n\n    ${widget.story.firstSentence}    \n\n", 
 							textScaleFactor: 1.2,
 							style: TextStyle(
 								color: Colors.white, 
