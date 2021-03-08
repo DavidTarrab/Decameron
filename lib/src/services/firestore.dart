@@ -30,7 +30,6 @@ class Database extends Service {
 	/// Use this function to get an ID before uploading a document.
 	String getRandomStoryId() => storiesCollection.doc().id;
 
-	/// Gets n random stories from the database. 
 	Future<List<Map>> getRandomStories(int n) async {
 		final String randomKey = getRandomStoryId();
 		final List<Map> result = [];
@@ -68,15 +67,12 @@ class Database extends Service {
 		.where("author.uid", isEqualTo: uid)
 		.getData();
 
-	/// Uploads a story to the database. 
 	Future<void> uploadStory(Map json, String id) => 
 		storiesCollection.doc(id).set(Map<String, dynamic>.from(json));
 
-	Future<void> approveStory(String id) async {
-		final DocumentReference document = storiesCollection.doc(id);
-		await document.update({"isApproved": true});
-	}
-
 	Future<void> deleteStory(String id) => 
 		storiesCollection.doc(id).delete();
+
+	Future<void> approveStory(String id) => storiesCollection
+		.doc(id).update({"isApproved": true});
 }
