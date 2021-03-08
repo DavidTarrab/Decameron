@@ -26,18 +26,20 @@ class UserPageState extends State<UserPage> {
 		body: Center(
 			child: FutureBuilder<List<Story>>(
 				future: storiesFuture,
-				builder: (_, AsyncSnapshot snapshot) => snapshot.hasData
-					? Text("Loading stories for ${widget.author.name}")
-					: ListView(
-						children: [
-							Text(
-								"Stories for ${widget.author.name}", 
-								style: Theme.of(context).textTheme.subtitle1,
-							),
-							for (final Story story in snapshot.data)
-								StoryTile(story)
-						]
-					)
+				builder: (_, AsyncSnapshot snapshot) => !snapshot.hasData
+					? Text("Loading stories for ${widget.author}...")
+					: snapshot.data.isEmpty 
+						? Text("No stories found for ${widget.author}")
+						: ListView(
+							children: [
+								Text(
+									"Stories for ${widget.author}", 
+									style: Theme.of(context).textTheme.subtitle1,
+								),
+								for (final Story story in snapshot.data)
+									StoryTile(story)
+							]
+						)
 			)
 		)
 	);
