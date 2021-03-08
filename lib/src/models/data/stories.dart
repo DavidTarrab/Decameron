@@ -34,11 +34,16 @@ class Stories extends Model {
 	Future<void> upload(Story story, String id) async { 
 		await Services.instance.database.uploadStory(story.json, id);
 		await Services.instance.database.uploadStoryToUser(id);
-		randomStories = await getRandomStories();
 		notifyListeners();  // updates the fireplace with the new story
 	}
 
 	/// Returns the download URL of this story's video. 
 	Future<String> getVideoUrl(Story story) => 
 		Services.instance.storage.getVideoUrl(story.id);
+
+	Future<void> deleteStory(Story story) async {
+		await Services.instance.database.deleteStory(story.id);
+		randomStories.remove(story);
+		notifyListeners();
+	}
 }
