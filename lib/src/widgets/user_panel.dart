@@ -43,24 +43,27 @@ class WiderListTile extends StatelessWidget {
 	});
 
 	@override
-	Widget build(BuildContext context) => Padding(
-		padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-		child: Row(
-			mainAxisSize: MainAxisSize.min,
-			children: [
-				if (leading != null) leading, 
-				const SizedBox(width: 16),
-				Column(
-					crossAxisAlignment: CrossAxisAlignment.start,
-					children: [
-						Text(label, maxLines: 1),
-						if (subtitle != null)
-							Text(subtitle, maxLines: 1, style: Theme.of(context).textTheme.caption),
-					]
-				),
-				const SizedBox(width: 32),
-				if (trailing != null) trailing,
-			]
+	Widget build(BuildContext context) => InkWell(
+		onTap: onTap,
+		child: Padding(
+			padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+			child: Row(
+				mainAxisSize: MainAxisSize.min,
+				children: [
+					if (leading != null) leading, 
+					const SizedBox(width: 16),
+					Column(
+						crossAxisAlignment: CrossAxisAlignment.start,
+						children: [
+							Text(label, maxLines: 1),
+							if (subtitle != null)
+								Text(subtitle, maxLines: 1, style: Theme.of(context).textTheme.caption),
+						]
+					),
+					const SizedBox(width: 32),
+					if (trailing != null) trailing,
+				]
+			)
 		)
 	);
 }
