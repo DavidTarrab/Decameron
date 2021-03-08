@@ -85,4 +85,10 @@ class CloudFirestore extends Database {
 	@override
 	Future<void> deleteStory(String id) => 
 		storiesCollection.doc(id).delete();
+
+	@override
+	Future<void> uploadStoryToUser(String id) => userDocument.set(
+		{"stories": FieldValue.arrayUnion([id])}, 
+		SetOptions(merge: true)
+	);
 }
