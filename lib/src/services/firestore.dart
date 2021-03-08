@@ -2,11 +2,10 @@ import "package:cloud_firestore/cloud_firestore.dart";
 
 import "package:decameron/services.dart";
 
-import "database.dart";
-export "database.dart";
+import "service.dart";
 
-/// Implements the [Database] interface with Cloud Firestore. 
-class CloudFirestore extends Database {
+/// Provides access to the Cloud Firestore database. 
+class Database extends Service {
 	/// The Firestore plugin. 
 	static final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -25,27 +24,34 @@ class CloudFirestore extends Database {
 	@override
 	Future<void> init() async {}
 
-	@override
+	/// Gets a random ID for a new story.
+	/// 
+	/// Use this function to get an ID before uploading a document.
 	String getRandomStoryId() => storiesCollection.doc().id;
 
-	@override
+	/// Gets n random stories from the database. 
 	Future<List<Map>> getRandomStories(int n) async {
-		final String randomKey = storiesCollection.doc().id;
+		final String randomKey = getRandomStoryId();
+		final List<QueryDocumentSnapshot> snapshots = [];
 		final Query approvedStories = storiesCollection
 			.where("isApproved", isEqualTo: true);
-		Query query = approvedStories
-			.where(FieldPath.documentId, isLessThan: randomKey)
-			.limit(n);
-		QuerySnapshot stories = await query.get();
-		final List<QueryDocumentSnapshot> snapshots = stories.docs;
 
-		if (snapshots.length < n) {  // get more stories
-			query = approvedStories
-				.where(FieldPath.documentId, isGreaterThanOrEqualTo: randomKey)
-				.limit(n - snapshots.length);
-			stories = await query.get();
-			snapshots.addAll(stories.docs);
+		Future<void> addSnapshots({bool ascending}) async {
+			final Query randomQuery = (ascending 
+				? approvedStories.where(
+					FieldPath.documentId, 
+					isGreaterThanOrEqualTo: randomKey
+				) 
+				: approvedStories.where(
+					FieldPath.documentId, 
+					isLessThan: randomKey
+				)
+			).limit(n - snapshots.length);
+			snapshots.addAll((await randomQuery.get()).docs);
 		}
+		
+		await addSnapshots(ascending: true);
+		await addSnapshots(ascending: false);
 
 		return [
 			for (final QueryDocumentSnapshot snapshot in snapshots)
@@ -53,30 +59,6 @@ class CloudFirestore extends Database {
 		]..shuffle();
 	}
 
-	@override
-	Future<void> uploadStory(Map json, String id) async {
-		await storiesCollection.doc(id).set(Map<String, dynamic>.from(json));
-		await userDocument.set(
-			{"stories": FieldValue.arrayUnion([id])}, 
-			SetOptions(merge: true)
-		);
-	}
-
-	@override
-	Future<Map<String, dynamic>> get userProfile async => 
-		(await userDocument.get()).data();
-
-	@override
-	Future<void> setProfile(Map json) => 
-		userDocument.set(Map<String, dynamic>.from(json));
-
-	@override
-	Future<void> approveStory(String id) async {
-		final DocumentReference document = storiesCollection.doc(id);
-		await document.update({"isApproved": true});
-	}
-
-	@override
 	Future<List<Map>> get pendingStories async {
 		final Query query = storiesCollection
 			.where("isApproved", isEqualTo: false).limit(10);
@@ -87,7 +69,20 @@ class CloudFirestore extends Database {
 		];
 	}
 
-	@override
+	/// Uploads a story to the database. 
+	Future<void> uploadStory(Map json, String id) async {
+		await storiesCollection.doc(id).set(Map<String, dynamic>.from(json));
+		await userDocument.set(
+			{"stories": FieldValue.arrayUnion([id])}, 
+			SetOptions(merge: true)
+		);
+	}
+
+	Future<void> approveStory(String id) async {
+		final DocumentReference document = storiesCollection.doc(id);
+		await document.update({"isApproved": true});
+	}
+
 	Future<void> deleteStory(String id, String authorUID) async {
 		await storiesCollection.doc(id).delete();
 		await usersCollection.doc(authorUID).update(

@@ -16,7 +16,7 @@ class Services extends Service {
 	static final instance = Services();
 
 	/// The database service. 
-	final Database database = CloudFirestore();
+	final Database database = Database();
 
 	/// The authentication service. 
 	final Auth auth = Auth();
