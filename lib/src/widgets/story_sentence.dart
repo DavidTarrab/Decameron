@@ -79,8 +79,6 @@ class StorySentenceState extends State<StorySentence>
 
 	bool didCallCallback = false;
 
-	final FontWeight weight = Random().nextBool() ? FontWeight.w300 : FontWeight.w400;
-
 	/// Initializes the animation controllers. 
 	void initControllers() {
 		controller = AnimationController(
@@ -189,7 +187,7 @@ class StorySentenceState extends State<StorySentence>
 								color: Colors.white, 
 								letterSpacing: letterSpacing.value,
 								fontFamily: "Josefin Sans", 
-								fontWeight: weight
+								fontWeight: FontWeight.w300
 							),
 						)
 					)
