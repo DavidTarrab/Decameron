@@ -35,6 +35,12 @@ class StoryPageState extends State<StoryPage> {
 		initVideo();
 	}
 
+	@override
+	void dispose() {
+		controller.dispose();
+		super.dispose();
+	}
+
 	Future<void> initVideo() async {
 		if (!widget.story.hasVideo) {
 			return;

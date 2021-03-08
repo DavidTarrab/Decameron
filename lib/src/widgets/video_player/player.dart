@@ -38,9 +38,6 @@ class VideoPlayerState extends State<VideoPlayer> {
   @override
   void dispose() {
   	widget.controller.removeListener(listener);
-    if (!widget.isFullScreen) {
-      widget.controller.dispose();
-    }
     super.dispose();
   }
 

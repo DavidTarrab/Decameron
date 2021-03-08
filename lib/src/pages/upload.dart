@@ -40,6 +40,7 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 		titleController.dispose();
 		firstSentenceController.dispose();
 		transcriptController.dispose();
+		videoController.dispose();
 		super.dispose();
 	}
 
@@ -114,7 +115,8 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 							TextFormField(
 								onSaved: (String value) => model.text = value,
 								validator: nonEmptyValidator,
-								maxLines: null,
+								minLines: 1,
+								maxLines: 10,
 								controller: transcriptController,
 								decoration: const InputDecoration(
 									filled: true,
