@@ -40,6 +40,10 @@ class DecameronState extends State<Decameron> {
         builder: (_) => ModeratorPage(),
         isAllowed: () => Models.instance.user.isModerator,
       ),
+      Routes.user: (_) => RouteInitializer(
+        builder: (_) => UserPage(),
+        isAllowed: () => Models.instance.user.hasData
+      )
     }
   );
 }
