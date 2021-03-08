@@ -125,24 +125,17 @@ class StoryPageState extends State<StoryPage> {
 							style: Theme.of(context).textTheme.headline3
 								.copyWith(fontFamily: "Spectral", fontWeight: FontWeight.w800)
 						),              
-						Center(
-							child: Text(
-								"By: ${widget.story.author}",
-								style: Theme.of(context).textTheme.headline5,
-							)
-						),
-						const SizedBox(height: 20),
-						Text(
-							widget.story.firstSentence,
-							textAlign: TextAlign.center,
-							style: Theme.of(context).textTheme.headline4
-								.copyWith(color: Colors.lightBlue [700]),
-						),
-						const SizedBox(height: 10),
+						const SizedBox(height: 30),
 						if (widget.story.hasVideo)
 							VideoPlayer(controller),
-						Text(formatDateTime(context, widget.story.createdAt)),
-						const SizedBox(height: 10),
+						Row(
+							mainAxisAlignment: MainAxisAlignment.spaceBetween,
+							children: [
+								Text(formatDateTime(context, widget.story.createdAt)),
+								Text("By: ${widget.story.author}"),
+							]
+						),
+						const SizedBox(height: 50),
 						if (widget.story.hasVideo) Align(
 							alignment: Alignment.centerLeft, 
 							child: TextButton(
