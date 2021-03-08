@@ -24,7 +24,7 @@ class Models extends Model {
 	final Stories stories = Stories();
 
 	/// The user data model.
-	final UserModel user = UserModel();
+	final User user = User();
 
 	bool isReady = false;
 

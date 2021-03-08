@@ -34,7 +34,7 @@ class DecameronState extends State<Decameron> {
       Routes.about: (_) => AboutPage(),
       Routes.upload: (_) => RouteInitializer(
         builder: (_) => StoryUploaderPage(),
-        isAllowed: () => Models.instance.user.hasData
+        isAllowed: () => Models.instance.user.isSignedIn
       ), 
       Routes.moderator: (_) => RouteInitializer(
         builder: (_) => ModeratorPage(),
@@ -42,7 +42,7 @@ class DecameronState extends State<Decameron> {
       ),
       Routes.user: (_) => RouteInitializer(
         builder: (_) => UserPage(),
-        isAllowed: () => Models.instance.user.hasData
+        isAllowed: () => Models.instance.user.isSignedIn
       )
     }
   );

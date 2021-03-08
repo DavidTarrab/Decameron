@@ -70,7 +70,7 @@ class WiderListTile extends StatelessWidget {
 
 /// A small tile to show the user their authentication status. 
 class UserTile extends StatefulWidget {
-	final UserModel model;
+	final User model;
 	const UserTile(this.model);
 
 	@override
@@ -88,7 +88,7 @@ class UserTileState extends State<UserTile> {
 			border: Border.all(color: Colors.white),
 			borderRadius: BorderRadius.circular(10),
 		),
-		child: widget.model.hasData
+		child: widget.model.isSignedIn
 			? WiderListTile(
 					label: "Welcome, ${widget.model.author.first}",
 					leading: isLoading 
@@ -113,8 +113,8 @@ class UserTileState extends State<UserTile> {
 
 	/// Signs the user in. 
 	/// 
-	/// This function defers to [UserModel.signIn].
-	Future<void> signIn(UserModel model) async {
+	/// This function defers to [User.signIn].
+	Future<void> signIn(User model) async {
 		setState(() => isLoading = true);
 		try {
 			await model.signIn();
@@ -128,8 +128,8 @@ class UserTileState extends State<UserTile> {
 
 	/// Signs the user out.
 	/// 
- 	/// This function defers to [UserModel.signOut].
-	Future<void> signOut(UserModel model) async {
+ 	/// This function defers to [User.signOut].
+	Future<void> signOut(User model) async {
 		setState(() => isLoading = true);
 		await model.signOut();
 		setState(() => isLoading = false);
@@ -138,10 +138,10 @@ class UserTileState extends State<UserTile> {
 
 class UserPanel extends StatelessWidget {
 	@override
-	Widget build(BuildContext context) => ModelListener<UserModel>(
+	Widget build(BuildContext context) => ModelListener<User>(
 		model: () => Models.instance.user,
 		shouldDispose: false,
-		builder: (_, UserModel model, __) => Container(
+		builder: (_, User model, __) => Container(
 			padding: const EdgeInsets.all(10),
 			alignment: Alignment.topLeft,
 			child: Column(
