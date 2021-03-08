@@ -22,6 +22,9 @@ class Database extends Service {
 	final CollectionReference storiesCollection = 
 		firestore.collection("stories");
 
+	final CollectionReference authorsCollection = 
+		firestore.collection("authors");
+
 	@override
 	Future<void> init() async {}
 
@@ -67,8 +70,14 @@ class Database extends Service {
 		.where("author.uid", isEqualTo: uid)
 		.getData();
 
-	Future<void> uploadStory(Map json, String id) => 
-		storiesCollection.doc(id).set(Map<String, dynamic>.from(json));
+	Future<Map> getAuthor(String uid) async =>
+		(await authorsCollection.doc(uid).get()).data();
+
+	Future<void> uploadStory(Map storyJson) async {
+		await storiesCollection.doc(storyJson ["id"]).set(storyJson);
+		final Map authorJson = storyJson["author"];
+		await authorsCollection.doc(authorJson ["uid"]).set(authorJson);
+	}
 
 	Future<void> deleteStory(String id) => 
 		storiesCollection.doc(id).delete();

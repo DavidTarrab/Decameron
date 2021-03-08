@@ -31,7 +31,7 @@ class Stories extends Model {
 	/// 
 	/// Also updates the random list of stories.
 	Future<void> upload(Story story, String id) async { 
-		await Services.instance.database.uploadStory(story.json, id);
+		await Services.instance.database.uploadStory(story.json);
 		notifyListeners();  // updates the fireplace with the new story
 	}
 
@@ -45,7 +45,11 @@ class Stories extends Model {
 		notifyListeners();
 	}
 
-	Future<List<Story>> getStoriesByAuthor(Author author) async => storiesFromList(
-		await Services.instance.database.getStoriesByAuthor(author.uid)
-	);
+	Future<List<Story>> getStoriesByAuthor(Author author) async => 
+		storiesFromList(
+			await Services.instance.database.getStoriesByAuthor(author.uid)
+		);
+
+	Future<Author> getAuthor(String uid) async => 
+		Author.fromJson(await Services.instance.database.getAuthor(uid));
 }

@@ -139,7 +139,7 @@ class StoryPageState extends State<StoryPage> {
 								IconButton(
 									icon: const Icon(Icons.read_more),
 									onPressed: () => Navigator.of(context).push(
-										MaterialPageRoute(builder: (_) => UserPage(widget.story.author))
+										UserPage.getRoute(author: widget.story.author)
 									)
 								)
 							]
