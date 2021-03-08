@@ -33,7 +33,6 @@ class Stories extends Model {
 	/// Also updates the random list of stories.
 	Future<void> upload(Story story, String id) async { 
 		await Services.instance.database.uploadStory(story.json, id);
-		await Services.instance.database.uploadStoryToUser(id);
 		notifyListeners();  // updates the fireplace with the new story
 	}
 
@@ -42,7 +41,7 @@ class Stories extends Model {
 		Services.instance.storage.getVideoUrl(story.id);
 
 	Future<void> deleteStory(Story story) async {
-		await Services.instance.database.deleteStory(story.id);
+		await Services.instance.database.deleteStory(story.id, story.author.uid);
 		randomStories.remove(story);
 		notifyListeners();
 	}

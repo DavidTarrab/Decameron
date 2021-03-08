@@ -21,9 +21,7 @@ abstract class Database extends Service {
 
 	Future<void> approveStory(String id);
 
-	Future<void> deleteStory(String id);
-
-	Future<void> uploadStoryToUser(String id);
+	Future<void> deleteStory(String id, String authorUID);
 
 	/// Gets a random ID for a new story.
 	/// 

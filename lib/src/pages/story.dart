@@ -77,7 +77,7 @@ class StoryPageState extends State<StoryPage> {
 			)
 		);
 		if (confirmation == true) {
-			await Models.instance.moderator.deleteStory(widget.story);
+			await Models.instance.stories.deleteStory(widget.story);
 			Navigator.of(context).pop();
 		}
 	}

@@ -54,8 +54,13 @@ class CloudFirestore extends Database {
 	}
 
 	@override
-	Future<void> uploadStory(Map json, String id) => 
-		storiesCollection.doc(id).set(Map<String, dynamic>.from(json));
+	Future<void> uploadStory(Map json, String id) async {
+		await storiesCollection.doc(id).set(Map<String, dynamic>.from(json));
+		await userDocument.set(
+			{"stories": FieldValue.arrayUnion([id])}, 
+			SetOptions(merge: true)
+		);
+	}
 
 	@override
 	Future<Map<String, dynamic>> get userProfile async => 
@@ -83,12 +88,10 @@ class CloudFirestore extends Database {
 	}
 
 	@override
-	Future<void> deleteStory(String id) => 
-		storiesCollection.doc(id).delete();
-
-	@override
-	Future<void> uploadStoryToUser(String id) => userDocument.set(
-		{"stories": FieldValue.arrayUnion([id])}, 
-		SetOptions(merge: true)
-	);
+	Future<void> deleteStory(String id, String authorUID) async {
+		await storiesCollection.doc(id).delete();
+		await usersCollection.doc(authorUID).update(
+			{"stories": FieldValue.arrayRemove([id])},
+		);
+	}
 }
