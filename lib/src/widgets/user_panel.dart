@@ -19,6 +19,8 @@ class WiderListTile extends StatelessWidget {
 	/// Equivalent to [ListTile.title].
 	final String label;
 
+	final String subtitle;
+
 	/// The leading widget. 
 	/// 
 	/// Equivalent to [ListTile.leading]. 
@@ -29,11 +31,15 @@ class WiderListTile extends StatelessWidget {
 	/// Equivalent to [ListTile.trailing].
 	final Widget trailing;
 
+	final VoidCallback onTap;
+
 	/// Creates a Row that imitates a ListTile. 
 	const WiderListTile({
 		@required this.label,
 		@required this.leading,
 		@required this.trailing,
+		this.subtitle,
+		this.onTap,
 	});
 
 	@override
@@ -44,7 +50,14 @@ class WiderListTile extends StatelessWidget {
 			children: [
 				if (leading != null) leading, 
 				const SizedBox(width: 16),
-				Text(label, maxLines: 1),
+				Column(
+					crossAxisAlignment: CrossAxisAlignment.start,
+					children: [
+						Text(label, maxLines: 1),
+						if (subtitle != null)
+							Text(subtitle, maxLines: 1, style: Theme.of(context).textTheme.caption),
+					]
+				),
 				const SizedBox(width: 32),
 				if (trailing != null) trailing,
 			]
@@ -78,6 +91,7 @@ class UserTileState extends State<UserTile> {
 					leading: isLoading 
 						? const CircularProgressIndicator() 
 						: CircleAvatar(radius: 16, child: Text(widget.model.author.first [0])),
+					subtitle: "Click to see your stories",
 					trailing: TextButton(
 						child: const Text("Sign out"),
 						onPressed: () => signOut(widget.model),
