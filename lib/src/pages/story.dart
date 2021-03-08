@@ -4,6 +4,8 @@ import "package:decameron/data.dart";
 import "package:decameron/models.dart";
 import "package:decameron/widgets.dart";
 
+import "user.dart";
+
 String formatDateTime(BuildContext context, DateTime dateTime) {
 	final MaterialLocalizations locale = MaterialLocalizations.of(context);
 	final TimeOfDay timeOfDay = TimeOfDay.fromDateTime(dateTime);
@@ -129,10 +131,17 @@ class StoryPageState extends State<StoryPage> {
 						if (widget.story.hasVideo)
 							VideoPlayer(controller),
 						Row(
-							mainAxisAlignment: MainAxisAlignment.spaceBetween,
 							children: [
 								Text(formatDateTime(context, widget.story.createdAt)),
+								const Spacer(),
 								Text("By: ${widget.story.author}"),
+								const SizedBox(width: 20),
+								IconButton(
+									icon: const Icon(Icons.read_more),
+									onPressed: () => Navigator.of(context).push(
+										MaterialPageRoute(builder: (_) => UserPage(widget.story.author))
+									)
+								)
 							]
 						),
 						const SizedBox(height: 50),
