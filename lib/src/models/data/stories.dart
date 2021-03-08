@@ -25,7 +25,7 @@ class Stories extends Model {
 
 	@override
 	Future<void> init() async {
-		randomStories = await getRandomStories()..shuffle();
+		randomStories = await getRandomStories();
 	}
 
 	/// Uploads a story to the database. 
@@ -33,7 +33,7 @@ class Stories extends Model {
 	/// Also updates the random list of stories.
 	Future<void> upload(Story story, String id) async { 
 		await Services.instance.database.uploadStory(story.json, id);
-		randomStories = await getRandomStories()..shuffle();
+		randomStories = await getRandomStories();
 		notifyListeners();  // updates the fireplace with the new story
 	}
 

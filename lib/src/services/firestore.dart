@@ -50,7 +50,7 @@ class CloudFirestore extends Database {
 		return [
 			for (final QueryDocumentSnapshot snapshot in snapshots)
 				snapshot.data()
-		];
+		]..shuffle();
 	}
 
 	@override
