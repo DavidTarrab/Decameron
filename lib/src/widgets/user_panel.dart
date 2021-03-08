@@ -95,7 +95,9 @@ class UserTileState extends State<UserTile> {
 						? const CircularProgressIndicator() 
 						: CircleAvatar(radius: 16, child: Text(widget.model.author.first [0])),
 					subtitle: "Click to see your stories",
-					onTap: () => Navigator.of(context).pushNamed(Routes.user),
+					onTap: () => Navigator.of(context).push(
+						MaterialPageRoute(builder: (_) => UserPage(widget.model.author))
+					),
 					trailing: TextButton(
 						child: const Text("Sign out"),
 						onPressed: () => signOut(widget.model),

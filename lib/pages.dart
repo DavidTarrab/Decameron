@@ -22,6 +22,4 @@ class Routes {
 	static const String splash = "splash";
 
 	static const String about = "about";
-
-	static const String user = "user";
 }
