@@ -184,10 +184,10 @@ class StorySentenceState extends State<StorySentence>
 							"\n\n    ${widget.story.firstSentence}    \n\n", 
 							textScaleFactor: 1.2,
 							style: TextStyle(
-								color: Colors.white, 
+								color: const Color(0xffe25822),
 								letterSpacing: letterSpacing.value,
 								fontFamily: "Josefin Sans", 
-								fontWeight: FontWeight.w300
+								fontWeight: FontWeight.w400
 							),
 						)
 					)
