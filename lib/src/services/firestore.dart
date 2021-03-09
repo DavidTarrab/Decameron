@@ -74,9 +74,11 @@ class Database extends Service {
 		(await authorsCollection.doc(uid).get()).data();
 
 	Future<void> uploadStory(Map storyJson) async {
-		await storiesCollection.doc(storyJson ["id"]).set(storyJson);
+		await storiesCollection.doc(storyJson ["id"])
+			.set(Map<String, dynamic>.from(storyJson));
 		final Map authorJson = storyJson["author"];
-		await authorsCollection.doc(authorJson ["uid"]).set(authorJson);
+		await authorsCollection.doc(authorJson ["uid"])
+			.set(Map<String, dynamic>.from(authorJson));
 	}
 
 	Future<void> deleteStory(String id) => 

@@ -26,12 +26,15 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 	/// Controller for the transcript.
 	final TextEditingController transcriptController = TextEditingController();
 
+	final TextEditingController authorController = TextEditingController();
+
 	final VideoController videoController = VideoController();
 
 	@override
 	void initState() {
 		super.initState();
 		model.addListener(listener);
+		authorController.text = Models.instance.user.author.name;
 	}
 
 	@override
@@ -40,6 +43,7 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 		titleController.dispose();
 		firstSentenceController.dispose();
 		transcriptController.dispose();
+		authorController.dispose();
 		videoController.dispose();
 		super.dispose();
 	}
@@ -108,6 +112,13 @@ class StoryUploaderState extends State<StoryUploaderPage> {
 								onSaved: (String value) => model.firstSentence = value,
 								validator: nonEmptyValidator,
 								controller: firstSentenceController,
+							),
+							const SizedBox(height: 20),
+							SwitchListTile(
+								value: model.isUsingFullName,
+								onChanged: (bool value) => model.isUsingFullName = value,
+								title: const Text("Use full name (Adults only)"),
+								subtitle: Text("Uploading as ${model.author}"),
 							),
 							const SizedBox(height: 20),
 							const Text("Type out the full story here"),

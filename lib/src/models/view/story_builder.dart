@@ -21,6 +21,8 @@ enum VideoState {
 /// Builds a [Story], one field at a time. 
 // ignore: prefer_mixin
 class StoryBuilderModel with ChangeNotifier {
+	Author author;
+
 	/// The title for this story. 
 	String title;
 
@@ -37,6 +39,27 @@ class StoryBuilderModel with ChangeNotifier {
 
 	bool didSelectVideo = false;
 
+	bool _isUsingFullName = false;
+	bool get isUsingFullName => _isUsingFullName;
+	set isUsingFullName(bool value) {
+		_isUsingFullName = value;
+		if (value) {
+			final String name = Services.instance.auth.username;
+			final List<String> parts = name.split(" ");
+			final String first = parts.first;
+			// Can't just do .last, must pick up the remaining parts
+			final String last = parts.sublist(1).join(" ");
+			author = Author(
+				first: first,
+				last: last,
+				uid: author.uid,
+			);
+		} else {
+			author = Models.instance.user.author;
+		}
+		notifyListeners();
+	}
+
 	/// The state of video loading. 
 	VideoState videoState = VideoState.done;
 
@@ -46,6 +69,7 @@ class StoryBuilderModel with ChangeNotifier {
 	/// Creates a view model for uploading stories. 
 	StoryBuilderModel() {
 		id = Services.instance.database.getRandomStoryId();
+		author = Models.instance.user.author;
 	}
 
 	/// The progress of video loading. 
@@ -66,7 +90,7 @@ class StoryBuilderModel with ChangeNotifier {
 	Story get story => Story(
 		title: title,
 		firstSentence: firstSentence,
-		author: Models.instance.user.author,
+		author: author, 
 		createdAt: DateTime.now(),
 		text: text,
 		hasVideo: didSelectVideo,
