@@ -50,9 +50,13 @@ class HomePageState extends State<HomePage> {
 				UserPanel(),
 				Container(
 					alignment: Alignment.bottomRight,
-					padding: const EdgeInsets.all(50),
+					padding: const EdgeInsets.all(25),
 					child: TextButton(
-						child: const Text("About", textScaleFactor: 1.2),
+						child: Text(
+							"About", 
+							textScaleFactor: 1.2, 
+							style: TextStyle(color: Colors.amber [600])
+						),
 						onPressed: () => Navigator.of(context).pushNamed(Routes.about),
 					),
 				),
@@ -63,13 +67,18 @@ class HomePageState extends State<HomePage> {
 					)
 				),
 				Align(
-					alignment: const Alignment(0, 0.85),
+					alignment: const Alignment(0, 0.8),
 					child: Builder(
 						builder: (BuildContext context) => TextButton(
 							onPressed: () => uploadStory(context),
 							child: Text(
 								"Tell your own story", 
-								style: Theme.of(context).textTheme.headline5
+								textScaleFactor: 1.2,
+								style: Theme.of(context).textTheme.headline5.copyWith(
+									fontFamily: "Josefin Sans", 
+									height: 1.2, 
+									color: const Color(0x88ff0000)
+								),
 							),
 						)
 					)
