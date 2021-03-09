@@ -42,6 +42,12 @@ class Story {
 		this.isApproved = false,
 	});
 
+	@override
+	bool operator == (Object other) => other is Story && id == other.id;
+
+	@override
+	int get hashCode => id.hashCode;
+
 	/// Reads a story from a JSON object. 
 	Story.fromJson(Map json) : 
 		createdAt = DateTime.parse(json ["createdAt"]),

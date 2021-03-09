@@ -1,12 +1,20 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 
-import "package:decameron/services.dart";
+import "service.dart";
 
-import "database.dart";
-export "database.dart";
+extension on Query {
+	Future<List<Map>> getData() async {
+		final QuerySnapshot snapshot = await get();
+		final List<QueryDocumentSnapshot> documents = snapshot.docs;
+		return [
+			for (final QueryDocumentSnapshot document in documents)
+				document.data()
+		];
+	}
+}
 
-/// Implements the [Database] interface with Cloud Firestore. 
-class CloudFirestore extends Database {
+/// Provides access to the Cloud Firestore database. 
+class Database extends Service {
 	/// The Firestore plugin. 
 	static final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -14,75 +22,66 @@ class CloudFirestore extends Database {
 	final CollectionReference storiesCollection = 
 		firestore.collection("stories");
 
-	/// The users collection. 
-	final CollectionReference usersCollection = 
-		firestore.collection("users");
-
-	/// The user profile document for this user.
-	DocumentReference get userDocument => 
-		usersCollection.doc(Services.instance.auth.uid);
+	final CollectionReference authorsCollection = 
+		firestore.collection("authors");
 
 	@override
 	Future<void> init() async {}
 
-	@override
+	/// Gets a random ID for a new story.
+	/// 
+	/// Use this function to get an ID before uploading a document.
 	String getRandomStoryId() => storiesCollection.doc().id;
 
-	@override
 	Future<List<Map>> getRandomStories(int n) async {
-		final String randomKey = storiesCollection.doc().id;
+		final String randomKey = getRandomStoryId();
+		final List<Map> result = [];
 		final Query approvedStories = storiesCollection
 			.where("isApproved", isEqualTo: true);
-		Query query = approvedStories
-			.where(FieldPath.documentId, isLessThan: randomKey)
-			.limit(n);
-		QuerySnapshot stories = await query.get();
-		final List<QueryDocumentSnapshot> snapshots = stories.docs;
 
-		if (snapshots.length < n) {  // get more stories
-			query = approvedStories
-				.where(FieldPath.documentId, isGreaterThanOrEqualTo: randomKey)
-				.limit(n - snapshots.length);
-			stories = await query.get();
-			snapshots.addAll(stories.docs);
+		Future<List<Map>> addDocuments({bool ascending}) async {
+			final Query randomQuery = (ascending 
+				? approvedStories.where(
+					FieldPath.documentId, 
+					isGreaterThanOrEqualTo: randomKey
+				) 
+				: approvedStories.where(
+					FieldPath.documentId, 
+					isLessThan: randomKey
+				)
+			).limit(n - result.length);
+
+			return randomQuery.getData();
 		}
-
+		
 		return [
-			for (final QueryDocumentSnapshot snapshot in snapshots)
-				snapshot.data()
+			...await addDocuments(ascending: true),
+			...await addDocuments(ascending: false),
 		];
 	}
 
-	@override
-	Future<void> uploadStory(Map json, String id) => 
-		storiesCollection.doc(id).set(Map<String, dynamic>.from(json));
+	Future<List<Map>> get pendingStories => storiesCollection
+		.where("isApproved", isEqualTo: false)
+		.limit(10)
+		.getData();
 
-	@override
-	Future<Map<String, dynamic>> get userProfile async => 
-		(await userDocument.get()).data();
+	Future<List<Map>> getStoriesByAuthor(String uid) => storiesCollection
+		.where("isApproved", isEqualTo: true)
+		.where("author.uid", isEqualTo: uid)
+		.getData();
 
-	@override
-	Future<void> setProfile(Map json) => 
-		userDocument.set(Map<String, dynamic>.from(json));
+	Future<Map> getAuthor(String uid) async =>
+		(await authorsCollection.doc(uid).get()).data();
 
-	@override
-	Future<void> approveStory(String id) async {
-		final DocumentReference document = storiesCollection.doc(id);
-		await document.update({"isApproved": true});
+	Future<void> uploadStory(Map storyJson) async {
+		await storiesCollection.doc(storyJson ["id"]).set(storyJson);
+		final Map authorJson = storyJson["author"];
+		await authorsCollection.doc(authorJson ["uid"]).set(authorJson);
 	}
 
-	@override
-	Future<List<Map>> get pendingStories async {
-		final Query query = storiesCollection
-			.where("isApproved", isEqualTo: false).limit(10);
-		final QuerySnapshot snapshot = await query.get();
-		return [
-			for (final QueryDocumentSnapshot document in snapshot.docs)
-				document.data()
-		];
-	}
-
-	@override
 	Future<void> deleteStory(String id) => 
 		storiesCollection.doc(id).delete();
+
+	Future<void> approveStory(String id) => storiesCollection
+		.doc(id).update({"isApproved": true});
 }

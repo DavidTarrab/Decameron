@@ -6,9 +6,8 @@ import "src/services/service.dart";
 
 export "src/services/auth.dart";
 export "src/services/cloud_storage.dart";
-export "src/services/database.dart";
 export "src/services/file_picker.dart";
-
+export "src/services/firestore.dart";
 
 /// Bundles all the services in one convenient object. 
 class Services extends Service {
@@ -16,7 +15,7 @@ class Services extends Service {
 	static final instance = Services();
 
 	/// The database service. 
-	final Database database = CloudFirestore();
+	final Database database = Database();
 
 	/// The authentication service. 
 	final Auth auth = Auth();

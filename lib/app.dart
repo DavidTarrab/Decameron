@@ -34,12 +34,26 @@ class DecameronState extends State<Decameron> {
       Routes.about: (_) => AboutPage(),
       Routes.upload: (_) => RouteInitializer(
         builder: (_) => StoryUploaderPage(),
-        isAllowed: () => Models.instance.user.hasData
+        isAllowed: () => Models.instance.user.isSignedIn
       ), 
       Routes.moderator: (_) => RouteInitializer(
         builder: (_) => ModeratorPage(),
         isAllowed: () => Models.instance.user.isModerator,
       ),
-    }
+    },
+    onGenerateRoute: (RouteSettings settings) {
+      final List<String> path = settings.name.split("/");
+      final String prefix = path.first;
+      switch (prefix) {
+        case "author": return MaterialPageRoute(
+          builder: (_) => UserPage(uid: path.last),
+          settings: settings,
+        );
+        default: return MaterialPageRoute(
+          builder: (_) => ErrorPage(),
+          settings: settings,
+        );
+      }
+    },
   );
 }

@@ -19,6 +19,8 @@ class WiderListTile extends StatelessWidget {
 	/// Equivalent to [ListTile.title].
 	final String label;
 
+	final String subtitle;
+
 	/// The leading widget. 
 	/// 
 	/// Equivalent to [ListTile.leading]. 
@@ -29,32 +31,46 @@ class WiderListTile extends StatelessWidget {
 	/// Equivalent to [ListTile.trailing].
 	final Widget trailing;
 
+	final VoidCallback onTap;
+
 	/// Creates a Row that imitates a ListTile. 
 	const WiderListTile({
 		@required this.label,
 		@required this.leading,
 		@required this.trailing,
+		this.subtitle,
+		this.onTap,
 	});
 
 	@override
-	Widget build(BuildContext context) => Padding(
-		padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-		child: Row(
-			mainAxisSize: MainAxisSize.min,
-			children: [
-				if (leading != null) leading, 
-				const SizedBox(width: 16),
-				Text(label, maxLines: 1),
-				const SizedBox(width: 32),
-				if (trailing != null) trailing,
-			]
+	Widget build(BuildContext context) => InkWell(
+		onTap: onTap,
+		child: Padding(
+			padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+			child: Row(
+				mainAxisSize: MainAxisSize.min,
+				children: [
+					if (leading != null) leading, 
+					const SizedBox(width: 16),
+					Column(
+						crossAxisAlignment: CrossAxisAlignment.start,
+						children: [
+							Text(label, maxLines: 1),
+							if (subtitle != null)
+								Text(subtitle, maxLines: 1, style: Theme.of(context).textTheme.caption),
+						]
+					),
+					const SizedBox(width: 32),
+					if (trailing != null) trailing,
+				]
+			)
 		)
 	);
 }
 
 /// A small tile to show the user their authentication status. 
 class UserTile extends StatefulWidget {
-	final UserModel model;
+	final User model;
 	const UserTile(this.model);
 
 	@override
@@ -72,12 +88,16 @@ class UserTileState extends State<UserTile> {
 			border: Border.all(color: Colors.white),
 			borderRadius: BorderRadius.circular(10),
 		),
-		child: widget.model.hasData
+		child: widget.model.isSignedIn
 			? WiderListTile(
 					label: "Welcome, ${widget.model.author.first}",
 					leading: isLoading 
 						? const CircularProgressIndicator() 
 						: CircleAvatar(radius: 16, child: Text(widget.model.author.first [0])),
+					subtitle: "Click to see your stories",
+					onTap: () => Navigator.of(context).push(
+						UserPage.getRoute(author: widget.model.author),
+					),
 					trailing: TextButton(
 						child: const Text("Sign out"),
 						onPressed: () => signOut(widget.model),
@@ -95,8 +115,8 @@ class UserTileState extends State<UserTile> {
 
 	/// Signs the user in. 
 	/// 
-	/// This function defers to [UserModel.signIn].
-	Future<void> signIn(UserModel model) async {
+	/// This function defers to [User.signIn].
+	Future<void> signIn(User model) async {
 		setState(() => isLoading = true);
 		try {
 			await model.signIn();
@@ -110,8 +130,8 @@ class UserTileState extends State<UserTile> {
 
 	/// Signs the user out.
 	/// 
- 	/// This function defers to [UserModel.signOut].
-	Future<void> signOut(UserModel model) async {
+ 	/// This function defers to [User.signOut].
+	Future<void> signOut(User model) async {
 		setState(() => isLoading = true);
 		await model.signOut();
 		setState(() => isLoading = false);
@@ -120,10 +140,10 @@ class UserTileState extends State<UserTile> {
 
 class UserPanel extends StatelessWidget {
 	@override
-	Widget build(BuildContext context) => ModelListener<UserModel>(
+	Widget build(BuildContext context) => ModelListener<User>(
 		model: () => Models.instance.user,
 		shouldDispose: false,
-		builder: (_, UserModel model, __) => Container(
+		builder: (_, User model, __) => Container(
 			padding: const EdgeInsets.all(10),
 			alignment: Alignment.topLeft,
 			child: Column(

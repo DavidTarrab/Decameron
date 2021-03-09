@@ -109,7 +109,7 @@ class HomePageState extends State<HomePage> {
 	/// 
 	/// Needs a [BuildContext] underneath the scaffold. 
 	Future<void> uploadStory(BuildContext context) async {
-		if (!Models.instance.user.hasData) {
+		if (!Models.instance.user.isSignedIn) {
 			return Scaffold.of(context).showSnackBar(
 				const SnackBar(content: Text("You must be signed in to upload a story")),
 			);

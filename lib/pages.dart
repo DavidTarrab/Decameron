@@ -5,6 +5,7 @@ export "src/pages/moderator.dart";
 export "src/pages/route_initializer.dart";
 export "src/pages/story.dart";
 export "src/pages/upload.dart";
+export "src/pages/user.dart";
 
 /// A container class for route names. 
 class Routes {
