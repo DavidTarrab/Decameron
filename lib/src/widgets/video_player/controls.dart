@@ -46,8 +46,7 @@ class VideoControlsState extends State<VideoControls> {
     super.dispose();
   }
 
-  double durationToDouble(Duration duration) => duration == null ? null 
-    : duration.inMinutes * 60.0 + duration.inSeconds;
+  double durationToDouble(Duration duration) => duration?.inSeconds?.toDouble();
   Duration doubleToDuration(double position) => 
     Duration(minutes: position ~/ 60, seconds: (position % 60).truncate());
 
@@ -58,36 +57,38 @@ class VideoControlsState extends State<VideoControls> {
   Future<bool> popWithValue() async {
     final plugin.VideoPlayerValue result = currentValue;
     await pause();
-  	Navigator.of(context).pop(result);
-  	return false;
+    Navigator.of(context).pop(result);
+    return false;
   }
 
   Future<void> toggleFullScreen() async {
     if (widget.isFullScreen) {
-    	await popWithValue();
+      await popWithValue();
     } else {
-    	final plugin.VideoPlayerValue result = await showDialog(
-	      context: context,
-	      builder: (_) => WillPopScope(
-	      	onWillPop: popWithValue, 
-	      	child: Scaffold(
-		        body: Center(
-		        	child: VideoPlayer(
-			          VideoController(widget.controller), 
-			          isFullScreen: true
-			        )
-	        	)
-        	)
-	      )
-	    );
+      final plugin.VideoPlayerValue result = await showDialog(
+        context: context,
+        builder: (_) => WillPopScope(
+          onWillPop: popWithValue, 
+          child: Scaffold(
+            body: Center(
+              child: VideoPlayer(
+                VideoController(widget.controller), 
+                isFullScreen: true
+              )
+            )
+          )
+        )
+      );
       await Future.delayed(const Duration(milliseconds: 250));
-	    await widget.controller.initialize();
-	    await seek(result.position);
-	    if (result.isPlaying) {
+      await widget.controller.initialize();
+      await seek(result.position);
+      if (result.isPlaying) {
         await play();
       }
     }
   }
+
+  double seekValue;
 
   @override
   Widget build(BuildContext context) => IconTheme(
@@ -111,8 +112,12 @@ class VideoControlsState extends State<VideoControls> {
               Slider(
                 min: 0,
                 max: durationToDouble(videoLength) ?? 1,
-                value: durationToDouble(currentPosition),
-                onChanged: (double value) => seek(doubleToDuration(value))
+                value: seekValue ?? durationToDouble(currentPosition),
+                onChanged: (double value) => setState(() => seekValue = value),
+                onChangeEnd: (double value) {
+                  setState(() => seekValue = null);
+                  seek(doubleToDuration(value));
+                },
               ),
             ]
           ),
@@ -127,16 +132,19 @@ class VideoControlsState extends State<VideoControls> {
                 onPressed: () => widget.controller.setVolume(isMuted ? 1 : 0),
               ),
               Text(
-              	currentValue == null ? "-- / --" : 
-                "${currentPosition.timestamp} / ${videoLength.timestamp}",
+                currentValue == null 
+                  ? "-- / --" 
+                  : "${(seekValue == null 
+                    ? currentPosition : doubleToDuration(seekValue)
+                  ).timestamp} / ${videoLength.timestamp}",
                 style: Theme.of(context).textTheme.caption
-                	.copyWith(color: Colors.white),
+                  .copyWith(color: Colors.white),
               ),
               const Spacer(),
               IconButton(
                 icon: Icon(
-                	widget.isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen
-              	),
+                  widget.isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen
+                ),
                 onPressed: toggleFullScreen,
               )
             ],
