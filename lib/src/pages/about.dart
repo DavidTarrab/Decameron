@@ -18,15 +18,16 @@ class AboutPage extends StatelessWidget {
 	      	fit: BoxFit.cover
       	)
     	),
-			child: Center(
+    	alignment: Alignment.center,
+			child: SingleChildScrollView(
 				child: FractionallySizedBox(
 					widthFactor: 2/3,
-					heightFactor: 2/3,
 					child: Container(
 						color: const Color(0x55000000),
 						child: Column(
+							mainAxisSize: MainAxisSize.min,
 							children: [
-								const Spacer(),
+								const SizedBox(height: 25),
 								Text(
 									// ignore: lines_longer_than_80_chars
 									"Storytelling makes us human. Stories capture the most powerful and contradictory feelings that we experience. When we tell a story, we become creators of the world.\nWe surprise ourselves with what we surrender, what we shape, and what we share.\nWe become comrades talking around a fire, a place of warmth and comfort.\nWe whisper in each other’s ears.",
@@ -44,7 +45,7 @@ class AboutPage extends StatelessWidget {
 									"This website provides a space for sharing those stories, and listening to those of others. Click on a story by the campfire to hear it being shared, or record yourself telling your own.",
 									style: getStyle(context),
 								),
-								const Spacer(),
+								const SizedBox(height: 25),
 							]
 						)
 					)
